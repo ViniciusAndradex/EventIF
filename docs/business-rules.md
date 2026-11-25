@@ -37,7 +37,7 @@ Para tornar os limites operacionais, considera-se durante `startDateTime <= agor
 | Cancelamento | Antes do início (RN06) e evento não CLOSED. |
 | Certificado | Evento CLOSED e ao menos uma presença do usuário (RN07); carga é a soma das atividades com presença. |
 | Publicação | Pelo menos uma atividade. |
-| Carga horária | Horas/minutos no formulário; minutos entre 0 e 59, total em minutos > 0; não precisa coincidir com duração. |
+| Carga horária | Calculada pela duração entre início e término, em minutos inteiros positivos, e persistida. |
 | Capacidade | Não reduzir abaixo dos inscritos; vagas e inscritos calculados. |
 | Proprietário | Ação sobre evento/atividade alheio por organizador retorna 403. |
 
