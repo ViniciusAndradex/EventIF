@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.env.*
+.idea
+.vscode
+.agents
+.codex
+.serena
+.aws
+target
+build
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
