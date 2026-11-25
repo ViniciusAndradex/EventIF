@@ -2,6 +2,7 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Administração', ~{::main})}">
 <body><main class="container flex-grow-1 py-4">
     <h1>Administração de usuários</h1>
+    <p><a class="btn btn-outline-primary" th:href="@{/admin/categorias}">Gerenciar categorias</a></p>
     <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
     <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
     <p>Ao retirar o papel de organizador, os eventos em rascunho serão encerrados. Eventos publicados impedem a retirada.</p>

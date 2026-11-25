@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Categorias', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+    <h1>Categorias</h1>
+    <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+    <p><a class="btn btn-primary" th:href="@{/admin/categorias/nova}">Nova categoria</a>
+        <a class="btn btn-link" th:href="@{/admin}">Voltar à administração</a></p>
+    <p th:if="${#lists.isEmpty(categories)}">Nenhuma categoria cadastrada.</p>
+    <div class="table-responsive" th:unless="${#lists.isEmpty(categories)}">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Nome</th><th scope="col">Ações</th></tr></thead>
+            <tbody><tr th:each="category : ${categories}">
+                <td th:text="${category.name}"></td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm" th:href="@{/admin/categorias/{id}/editar(id=${category.id})}">Editar</a>
+                    <form class="d-inline" method="post" th:action="@{/admin/categorias/{id}(id=${category.id})}">
+                        <input type="hidden" name="_method" value="delete">
+                        <button class="btn btn-outline-danger btn-sm" type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr></tbody>
+        </table>
+    </div>
+</main></body></html>
