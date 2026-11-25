@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Atividades', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+  <h1>Atividades de <span th:text="${event.title}"></span></h1>
+  <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+  <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+  <p><a class="btn btn-primary" th:if="${event.status.name() != 'CLOSED'}" th:href="@{/organizador/eventos/{id}/atividades/nova(id=${event.id})}">Nova atividade</a>
+     <a class="btn btn-link" th:href="@{/organizador/eventos}">Voltar aos eventos</a></p>
+  <p th:if="${#lists.isEmpty(activities)}">Nenhuma atividade cadastrada.</p>
+  <div class="table-responsive" th:unless="${#lists.isEmpty(activities)}"><table class="table align-middle">
+    <thead><tr><th>Título</th><th>Tipo</th><th>Instrutor</th><th>Início</th><th>Término</th><th>Carga</th><th>Número de vagas</th><th>Ações</th></tr></thead>
+    <tbody><tr th:each="activity : ${activities}">
+      <td th:text="${activity.title}"></td><td th:text="${activity.type.name() == 'LECTURE' ? 'Palestra' : (activity.type.name() == 'MINICOURSE' ? 'Minicurso' : 'Oficina')}"></td>
+      <td th:text="${activity.instructor}"></td><td th:text="${#temporals.format(activity.startDateTime, 'dd/MM/yyyy HH:mm')}"></td><td th:text="${#temporals.format(activity.endDateTime, 'dd/MM/yyyy HH:mm')}"></td>
+      <td th:text="${(activity.workloadMinutes / 60) + 'h ' + (activity.workloadMinutes % 60) + 'min'}"></td><td th:text="${activity.capacity}"></td>
+      <td th:if="${event.status.name() != 'CLOSED'}"><a class="btn btn-outline-primary btn-sm" th:href="@{/organizador/eventos/{eventId}/atividades/{activityId}/editar(eventId=${event.id},activityId=${activity.id})}">Editar</a>
+        <form class="d-inline" method="post" th:action="@{/organizador/eventos/{eventId}/atividades/{activityId}(eventId=${event.id},activityId=${activity.id})}"><input type="hidden" name="_method" value="delete"><button class="btn btn-outline-danger btn-sm">Excluir</button></form></td>
+      <td th:if="${event.status.name() == 'CLOSED'}">Evento encerrado</td>
+    </tr></tbody>
+  </table></div>
+</main></body></html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Atividade', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+  <h1 th:text="${activityId == null ? 'Nova atividade' : 'Editar atividade'}">Atividade</h1>
+  <form method="post" th:object="${activityForm}" th:action="${activityId == null} ? @{/organizador/eventos/{id}/atividades(id=${eventId})} : @{/organizador/eventos/{eventId}/atividades/{activityId}(eventId=${eventId},activityId=${activityId})}">
+    <input th:if="${activityId != null}" type="hidden" name="_method" value="put">
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+    <label class="form-label" for="title">Título</label><input class="form-control" id="title" th:field="*{title}" maxlength="255" required><div class="text-danger" th:errors="*{title}"></div>
+    <label class="form-label" for="type">Tipo</label><select class="form-select" id="type" th:field="*{type}" required><option value="">Selecione</option><option th:each="type : ${types}" th:value="${type}" th:text="${type.name() == 'LECTURE' ? 'Palestra' : (type.name() == 'MINICOURSE' ? 'Minicurso' : 'Oficina')}"></option></select><div class="text-danger" th:errors="*{type}"></div>
+    <label class="form-label" for="instructor">Instrutor</label><input class="form-control" id="instructor" th:field="*{instructor}" maxlength="255" required><div class="text-danger" th:errors="*{instructor}"></div>
+    <label class="form-label" for="startDateTime">Início</label><input class="form-control" type="datetime-local" id="startDateTime" th:field="*{startDateTime}" required><div class="text-danger" th:errors="*{startDateTime}"></div>
+    <label class="form-label" for="endDateTime">Término</label><input class="form-control" type="datetime-local" id="endDateTime" th:field="*{endDateTime}" required><div class="text-danger" th:errors="*{endDateTime}"></div>
+    <p class="form-text">A carga horária é calculada a partir do início e do término.</p>
+    <label class="form-label" for="capacity">Número de vagas</label><input class="form-control" type="number" id="capacity" min="1" th:field="*{capacity}" required><div class="text-danger" th:errors="*{capacity}"></div>
+    <button class="btn btn-primary mt-3">Salvar</button><a class="btn btn-link mt-3" th:href="@{/organizador/eventos/{id}/atividades(id=${eventId})}">Cancelar</a>
+  </form>
+</main></body></html>
