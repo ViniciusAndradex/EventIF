@@ -1,6 +1,6 @@
 # EventIF
 
-Projeto acadêmico da disciplina Tópicos em Java para a Web, voltado à divulgação de eventos, inscrições, presença e certificados. Esta etapa contém apenas a estrutura inicial; os fluxos de domínio e as credenciais dos três perfis ainda não foram implementados.
+Projeto acadêmico da disciplina Tópicos em Java para a Web, voltado à divulgação de eventos, inscrições, presença e certificados. Esta etapa contém apenas a estrutura inicial, os fluxos de domínio e as credenciais dos três perfis ainda não foram implementados.
 
 ## Execução com Docker Compose
 
