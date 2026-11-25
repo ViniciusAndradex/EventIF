@@ -18,13 +18,20 @@ public class SeedService {
     private final ActivityRepository activities;
     private final PasswordEncoder passwordEncoder;
     private final String seedPassword;
+    private final String participantEmail;
+    private final String adminEmail;
+    private final String organizerEmail;
 
     public SeedService(UserRepository users, RoleRepository roles, CategoryRepository categories,
                        EventRepository events, ActivityRepository activities, PasswordEncoder passwordEncoder,
-                       @Value("${SEED_PASSWORD:}") String seedPassword) {
+                       @Value("${SEED_PASSWORD:}") String seedPassword, @Value("${PARTICIPANT_EMAIL:}") String participantEmail,
+                       @Value("${ADMIN_EMAIL:}") String adminEmail, @Value("${ORGANIZER_EMAIL:}") String organizerEmail) {
         this.users = users; this.roles = roles; this.categories = categories;
         this.events = events; this.activities = activities; this.passwordEncoder = passwordEncoder;
         this.seedPassword = seedPassword;
+        this.participantEmail = participantEmail;
+        this.adminEmail = adminEmail;
+        this.organizerEmail = organizerEmail;
     }
 
     @Transactional
@@ -32,9 +39,9 @@ public class SeedService {
         Role participant = role("ROLE_PARTICIPANTE");
         Role organizerRole = role("ROLE_ORGANIZADOR");
         Role admin = role("ROLE_ADMIN");
-        user("Participante", "participante@eventif.local", participant);
-        User organizer = user("Organizador", "organizador@eventif.local", organizerRole);
-        user("Administrador", "admin@eventif.local", admin);
+        user("Participante", participantEmail, participant);
+        User organizer = user("Organizador", organizerEmail, organizerRole);
+        user("Administrador", adminEmail, admin);
         Category technology = category("Tecnologia");
         Category education = category("Educação");
         event("Encontro de Tecnologia", technology, organizer, LocalDate.of(2030, 5, 10),

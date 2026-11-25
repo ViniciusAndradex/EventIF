@@ -7,7 +7,11 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 - [ ] RF01: cadastrar publicamente e verificar papel PARTICIPANTE único.
 - [ ] RF02: entrar por email/senha e sair; confirmar acesso após logout.
 - [ ] RF03: ADMIN cria, consulta, altera e remove categoria permitida.
-- [ ] RF04: ADMIN lista usuários, concede e retira ORGANIZADOR; exercitar bloqueios e proteção de ADMIN.
+- [x] RF04: ADMIN lista usuários, concede e retira ORGANIZADOR; exercitar bloqueios e proteção de ADMIN.
+
+  Verificação manual em 25/11/2026: aplicação Java 21 e PostgreSQL 16 em Docker Compose isolado, requisições HTTP e conferência no banco. A listagem retornou 200 para ADMIN; anônimo foi redirecionado e PARTICIPANTE/ORGANIZADOR receberam 403. Com CSRF válido, ambos receberam 403 em PUT e DELETE diretos; sem CSRF, ADMIN recebeu 403. Concessão e retirada sem eventos preservaram um único papel. Retirada com PUBLISHED e DRAFT ou CLOSED foi bloqueada sem alterar estados; com apenas DRAFT, com DRAFT e CLOSED, e com apenas CLOSED, concluiu com papel PARTICIPANTE e rascunhos encerrados. Tentativas de conceder e retirar papel de ADMIN foram bloqueadas e mostraram mensagem. As operações retornaram mensagens flash.
+
+  Após concessão e retirada, a sessão aberta com o papel anterior foi invalidada na próxima requisição e redirecionada ao login.
 - [ ] RF05: ORGANIZADOR cria, consulta, altera e remove evento próprio permitido; tentar recurso alheio.
 - [ ] RF06: ORGANIZADOR gerencia atividades próprias e exercita restrições de exclusão.
 - [ ] RF07: verificar DRAFT inicial, publicação com/sem atividade, encerramento e ausência de reabertura.
