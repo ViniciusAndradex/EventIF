@@ -2,7 +2,6 @@ package br.edu.ifce.eventif.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -16,8 +15,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/organizador", "/organizador/**").hasRole("ORGANIZADOR")
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
-                .logout(Customizer.withDefaults())
+                .formLogin(form -> form.loginPage("/login").usernameParameter("email").permitAll())
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout"))
                 .build();
     }
 }
