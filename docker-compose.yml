@@ -27,6 +27,7 @@ services:
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:?Defina POSTGRES_DB no arquivo .env}
       DB_USERNAME: ${POSTGRES_USER:?Defina POSTGRES_USER no arquivo .env}
       DB_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
+      SEED_PASSWORD: ${SEED_PASSWORD:?Defina SEED_PASSWORD no arquivo .env}
       TZ: UTC
     ports:
       - "${APP_PORT:-8080}:8080"

@@ -8,6 +8,8 @@ Pacote base `br.edu.ifce.eventif`; organizar sob ele controllers, services, repo
 
 `controller → service → repository`: controller recebe requisição, valida DTO de formulário com Bean Validation e prepara view/resposta; não acessa repository nem contém regra de negócio. Service aplica regras, autorização contextual e transações; repository persiste e consulta. Na inscrição, a checagem de capacidade e a criação são protegidas na mesma transação por lock apropriado. Injectar `Clock` quando a lógica temporal precisar dele. Valores de inscritos e vagas são calculados.
 
+Services dependem das interfaces Spring Data em `repository`, como `UserRepository`, e o Spring cria suas implementações. A consulta de paginação de eventos utiliza `Page` e `Pageable`; o lock pessimista é configurado na interface de atividades.
+
 Templates usam fragments, `th:object`/`th:field`, erros por campo e flash messages. OpenHTMLtoPDF gera o PDF do certificado; a mesma informação deve estar disponível em HTML imprimível.
 
 ## Rotas e métodos

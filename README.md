@@ -15,6 +15,8 @@ Acesse `http://localhost:8080/`. A porta externa da aplicação é configurável
 
 O `.env.example` contém valores fictícios exclusivos de desenvolvimento; altere-os no `.env` conforme necessário e nunca use essa senha em produção. O arquivo `.env` é ignorado pelo Git. `POSTGRES_DB`, `POSTGRES_USER` e `POSTGRES_PASSWORD` configuram o banco; `APP_PORT` e `POSTGRES_PORT` configuram as portas externas. As credenciais do PostgreSQL são aplicadas na criação inicial do volume: alterá-las no `.env` não altera automaticamente um banco já inicializado.
 
+O inicializador cria os usuários `participante@eventif.local`, `organizador@eventif.local` e `admin@eventif.local` com a senha definida em `SEED_PASSWORD`, armazenada com BCrypt. O valor do exemplo é apenas para desenvolvimento; defina outro no `.env`. Quem já possui um `.env` deve acrescentar essa variável. O seed não altera senhas de usuários existentes. A autenticação por email ainda não está implementada.
+
 ## Alternativa com Maven local
 
 Pré-requisitos: Java 21, Maven 3.6.3 ou superior e PostgreSQL acessível. Para usar somente o banco do Compose, após criar `.env` como acima:
@@ -41,4 +43,4 @@ A autenticação, os usuários e os perfis definitivos ainda serão implementado
 - `src/main/resources`: configuração, templates Thymeleaf e fragments; Bootstrap é servido localmente pelo WebJar.
 - `docs/`: contexto mestre, requisitos, decisões e checklist de aceitação.
 
-As entidades, regras, autenticação por email, seed, catálogo, inscrições e certificados ainda estão pendentes. OpenHTMLtoPDF está incluído como dependência para a futura geração de certificados. Consulte `docs/project-context.md` antes de alterar comportamentos.
+As regras, autenticação por email, catálogo, inscrições e certificados ainda estão pendentes. OpenHTMLtoPDF está incluído como dependência para a futura geração de certificados. Consulte `docs/project-context.md` antes de alterar comportamentos.
