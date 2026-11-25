@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | EventIF'">EventIF</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header class="border-bottom"><nav class="container py-3" aria-label="Navegação principal">
+    <a class="navbar-brand fw-bold" th:href="@{/}">EventIF</a>
+</nav></header>
+<main class="container flex-grow-1 py-4" th:replace="${content}"></main>
+<footer class="border-top py-3 mt-auto"><div class="container text-body-secondary">EventIF</div></footer>
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}" defer></script>
+</body>
+</html>
