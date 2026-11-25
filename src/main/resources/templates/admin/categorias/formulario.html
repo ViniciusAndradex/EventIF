@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Categoria', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+    <h1 th:text="${categoryId == null ? 'Nova categoria' : 'Editar categoria'}">Categoria</h1>
+    <form method="post" th:object="${categoryForm}"
+          th:action="${categoryId == null} ? @{/admin/categorias} : @{/admin/categorias/{id}(id=${categoryId})}">
+        <input th:if="${categoryId != null}" type="hidden" name="_method" value="put">
+        <label class="form-label" for="name">Nome</label>
+        <input class="form-control" id="name" th:field="*{name}" maxlength="255" required>
+        <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        <button class="btn btn-primary mt-3" type="submit">Salvar</button>
+        <a class="btn btn-link mt-3" th:href="@{/admin/categorias}">Cancelar</a>
+    </form>
+</main></body></html>

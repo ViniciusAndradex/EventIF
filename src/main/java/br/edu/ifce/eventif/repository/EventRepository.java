@@ -14,5 +14,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByOrganizerId(Long organizerId);
     List<Event> findByOrganizerIdAndStatus(Long organizerId, EventStatus status);
     boolean existsByOrganizerIdAndStatus(Long organizerId, EventStatus status);
+    boolean existsByCategoryId(Long categoryId);
     Optional<Event> findFirstByTitleAndOrganizerId(String title, Long organizerId);
 }
