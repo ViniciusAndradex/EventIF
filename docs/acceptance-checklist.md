@@ -14,9 +14,11 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
   Verificação manual em 25/11/2026: aplicação Java 21 e PostgreSQL 16 em Docker Compose isolado, requisições HTTP e conferência no banco. A listagem retornou 200 para ADMIN; anônimo foi redirecionado e PARTICIPANTE/ORGANIZADOR receberam 403. Com CSRF válido, ambos receberam 403 em PUT e DELETE diretos; sem CSRF, ADMIN recebeu 403. Concessão e retirada sem eventos preservaram um único papel. Retirada com PUBLISHED e DRAFT ou CLOSED foi bloqueada sem alterar estados; com apenas DRAFT, com DRAFT e CLOSED, e com apenas CLOSED, concluiu com papel PARTICIPANTE e rascunhos encerrados. Tentativas de conceder e retirar papel de ADMIN foram bloqueadas e mostraram mensagem. As operações retornaram mensagens flash.
 
   Após concessão e retirada, a sessão aberta com o papel anterior foi invalidada na próxima requisição e redirecionada ao login.
-- [ ] RF05: ORGANIZADOR cria, consulta, altera e remove evento próprio permitido; tentar recurso alheio.
+- [x] RF05: ORGANIZADOR cria, consulta, altera e remove evento próprio permitido; tentar recurso alheio.
+
+  Verificação manual em 25/11/2026: Java 21 e PostgreSQL 16 em Docker Compose isolado. ORGANIZADOR criou rascunho, editou DRAFT e PUBLISHED, excluiu DRAFT sem atividades e recebeu bloqueio com atividades ou em CLOSED. Publicação sem atividade foi bloqueada; com atividade, passou a PUBLISHED; somente PUBLISHED foi encerrado. Edição, publicação, encerramento ou exclusão de CLOSED foram bloqueados. Um segundo organizador recebeu 403 ao acessar, editar, publicar, encerrar ou excluir evento alheio; ADMIN e PARTICIPANTE receberam 403 na listagem. Data final anterior à inicial foi recusada, datas iguais foram aceitas e alteração que excluiria atividade do período foi bloqueada. Um evento PUBLISHED sem atividades foi preparado diretamente no banco isolado e pôde ser excluído; o fluxo normal de publicação exige atividade, portanto essa situação normalmente não ocorre. Testes JUnit/Mockito de RN02 em EventService: três aprovados.
 - [ ] RF06: ORGANIZADOR gerencia atividades próprias e exercita restrições de exclusão.
-- [ ] RF07: verificar DRAFT inicial, publicação com/sem atividade, encerramento e ausência de reabertura.
+- [x] RF07: verificar DRAFT inicial, publicação com/sem atividade, encerramento e ausência de reabertura (ver registro de RF05).
 - [ ] RF08: conferir só publicados, filtro por categoria, 9 por página e ordem/data com desempate por id.
 - [ ] RF09: detalhe publicado mostra atividades/vagas; URLs de DRAFT e CLOSED retornam 404.
 - [ ] RF10: inscrever e cancelar nos estados e momentos permitidos; conferir bloqueios.

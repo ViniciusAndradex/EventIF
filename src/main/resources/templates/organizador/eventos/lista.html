@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Meus eventos', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+  <h1>Meus eventos</h1>
+  <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+  <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+  <p><a class="btn btn-primary" th:href="@{/organizador/eventos/novo}">Novo evento</a></p>
+  <p>Eventos publicados precisam de pelo menos uma atividade e normalmente não podem ser excluídos enquanto ela existir.</p>
+  <p th:if="${#lists.isEmpty(events)}">Você ainda não possui eventos.</p>
+  <div class="table-responsive" th:unless="${#lists.isEmpty(events)}"><table class="table align-middle">
+    <thead><tr><th>Título</th><th>Período</th><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody><tr th:each="event : ${events}">
+      <td th:text="${event.title}"></td><td th:text="${event.startDate + ' a ' + event.endDate}"></td>
+      <td th:text="${event.category.name}"></td>
+      <td th:text="${event.status.name() == 'DRAFT' ? 'Rascunho' : (event.status.name() == 'PUBLISHED' ? 'Publicado' : 'Encerrado')}"></td>
+      <td>
+        <a th:if="${event.status.name() != 'CLOSED'}" class="btn btn-outline-primary btn-sm" th:href="@{/organizador/eventos/{id}/editar(id=${event.id})}">Editar</a>
+        <form th:if="${event.status.name() == 'DRAFT'}" class="d-inline" method="post" th:action="@{/organizador/eventos/{id}/publicar(id=${event.id})}">
+          <input type="hidden" name="_method" value="put"><button class="btn btn-outline-success btn-sm">Publicar</button>
+        </form>
+        <form th:if="${event.status.name() == 'PUBLISHED'}" class="d-inline" method="post" th:action="@{/organizador/eventos/{id}/encerrar(id=${event.id})}">
+          <input type="hidden" name="_method" value="put"><button class="btn btn-outline-secondary btn-sm">Encerrar</button>
+        </form>
+        <form th:if="${event.status.name() != 'CLOSED'}" class="d-inline" method="post" th:action="@{/organizador/eventos/{id}(id=${event.id})}">
+          <input type="hidden" name="_method" value="delete"><button class="btn btn-outline-danger btn-sm">Excluir</button>
+        </form>
+      </td>
+    </tr></tbody>
+  </table></div>
+</main></body></html>
