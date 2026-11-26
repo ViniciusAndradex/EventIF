@@ -17,7 +17,10 @@ public class SecurityConfig {
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/organizador", "/organizador/**").hasRole("ORGANIZADOR")
                         .anyRequest().authenticated())
-                .formLogin(form -> form.loginPage("/login").usernameParameter("email").permitAll())
+                .formLogin(form -> 
+                    form.loginPage("/login")
+                    .usernameParameter("email")
+                    .permitAll())
                 .addFilterAfter(new CurrentRoleFilter(users), AnonymousAuthenticationFilter.class)
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout"))
                 .build();
