@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
+    @org.springframework.data.jpa.repository.Query("select a.event.id from Activity a where a.id = :id")
+    Optional<Long> findEventIdByActivityId(@org.springframework.data.repository.query.Param("id") Long id);
     List<Activity> findByEventId(Long eventId);
     long countByEventId(Long eventId);
     Optional<Activity> findFirstByTitleAndEventId(String title, Long eventId);

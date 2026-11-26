@@ -11,7 +11,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Acesse `http://localhost:8080/`. A porta externa da aplicação é configurável por `APP_PORT`; dentro do contêiner a aplicação usa a porta 8080. O PostgreSQL fica acessível apenas no localhost pela porta `POSTGRES_PORT` (5432 por padrão), e seus dados são preservados no volume `postgres_data`. A aplicação aguarda o healthcheck do banco antes de iniciar. Java, PostgreSQL e Hibernate usam UTC.
+Acesse `http://localhost:8080/`. A porta externa da aplicação é configurável por `APP_PORT`; dentro do contêiner a aplicação usa a porta 8080. O PostgreSQL fica acessível apenas no localhost pela porta `POSTGRES_PORT` (5432 por padrão), e seus dados são preservados no volume `postgres_data`. A aplicação aguarda o healthcheck do banco antes de iniciar. Java, PostgreSQL e Hibernate usam UTC internamente. Horários de atividades digitados na interface são horários locais, comparados no fuso `APP_TIME_ZONE`, cujo padrão é `America/Fortaleza`. Configure o mesmo fuso para todos os horários cadastrados; alterá-lo muda a interpretação dos horários existentes, sem convertê-los.
 
 O `.env.example` contém valores fictícios exclusivos de desenvolvimento; altere-os no `.env` conforme necessário e nunca use essa senha em produção. O arquivo `.env` é ignorado pelo Git. `POSTGRES_DB`, `POSTGRES_USER` e `POSTGRES_PASSWORD` configuram o banco; `APP_PORT` e `POSTGRES_PORT` configuram as portas externas. As credenciais do PostgreSQL são aplicadas na criação inicial do volume: alterá-las no `.env` não altera automaticamente um banco já inicializado.
 

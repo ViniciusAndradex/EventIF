@@ -31,6 +31,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:?Defina ADMIN_EMAIL no arquivo .env}
       PARTICIPANT_EMAIL: ${PARTICIPANT_EMAIL:?Defina PARTICIPANT_EMAIL no arquivo .env}
       ORGANIZER_EMAIL: ${ORGANIZER_EMAIL:?Defina ORGANIZER_EMAIL no arquivo .env}
+      APP_TIME_ZONE: ${APP_TIME_ZONE:-America/Fortaleza}
       TZ: UTC
     ports:
       - "${APP_PORT:-8080}:8080"

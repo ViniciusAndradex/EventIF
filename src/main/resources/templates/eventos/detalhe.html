@@ -18,6 +18,9 @@
             <p><strong>Início:</strong> <span th:text="${#temporals.format(item.activity.startDateTime, 'dd/MM/yyyy HH:mm')}"></span><br><strong>Término:</strong> <span th:text="${#temporals.format(item.activity.endDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
             <p><strong>Carga horária:</strong> <span th:text="${item.workload}"></span><br><strong>Capacidade:</strong> <span th:text="${item.activity.capacity}"></span><br><strong>Inscritos:</strong> <span th:text="${item.enrolledCount}"></span><br><strong>Vagas restantes:</strong> <span th:text="${item.remaining}"></span></p>
             <p th:if="${detail.participant}" th:text="${item.enrolled} ? 'Você está inscrito nesta atividade.' : 'Você ainda não está inscrito nesta atividade.'"></p>
+            <form th:if="${detail.participant and !item.enrolled}" th:action="@{/inscricoes/atividades/{id}(id=${item.activity.id})}" method="post">
+                <button class="btn btn-primary" type="submit">Inscrever-se</button>
+            </form>
         </div></article>
     </div></div>
 </main></body></html>
