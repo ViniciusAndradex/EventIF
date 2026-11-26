@@ -23,8 +23,12 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 
   Alteração posterior solicitada pelo usuário: a carga passa a ser calculada pela duração. Verificação manual no ambiente isolado: 09:00–10:35 gerou 95 minutos e foi exibido como 1h35; alteração do término para 11:00 gerou 120 minutos. O formulário deixou de solicitar carga e passou a apresentar “Número de vagas”; duração com fração de minuto foi recusada. Os seis testes de RN02 passaram novamente. O registro anterior preserva o resultado da regra que estava vigente à época.
 - [x] RF07: verificar DRAFT inicial, publicação com/sem atividade, encerramento e ausência de reabertura (ver registro de RF05).
-- [ ] RF08: conferir só publicados, filtro por categoria, 9 por página e ordem/data com desempate por id.
-- [ ] RF09: detalhe publicado mostra atividades/vagas; URLs de DRAFT e CLOSED retornam 404.
+- [x] RF08: conferir só publicados, filtro por categoria, 9 por página e ordem/data com desempate por id.
+
+  Verificação manual em 26/11/2026: aplicação Java 21 e PostgreSQL 16 em Docker Compose isolado, com dados preparados no banco e requisições HTTP anônimas. Entre 12 eventos publicados, a primeira página apresentou os IDs 1, 3, 4, 5, 6, 7, 8, 9 e 10; a segunda apresentou 11, 12 e 13, em ordem de data e ID para datas iguais. O filtro da categoria 1 apresentou apenas 1, 4, 6, 8, 10 e 12. Rascunho e evento encerrado não apareceram.
+- [x] RF09: detalhe publicado mostra atividades/vagas; URLs de DRAFT e CLOSED retornam 404.
+
+  Verificação manual no mesmo ambiente: detalhe publicado retornou 200 com atividade de capacidade 30, um inscrito e 29 vagas restantes; visitante não recebeu estado pessoal de inscrição. Após login como PARTICIPANTE inscrito, o detalhe indicou a inscrição. IDs de evento encerrado, rascunho e inexistente retornaram 404.
 - [ ] RF10: inscrever e cancelar nos estados e momentos permitidos; conferir bloqueios.
 - [ ] RF11: conferir inscrições/presenças do usuário da sessão, sem acesso às de terceiros.
 - [ ] RF12: organizador lista inscritos e marca presença nos momentos permitidos; testar recurso alheio.
