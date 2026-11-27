@@ -1,5 +1,6 @@
 package br.edu.ifce.eventif.config;
 
+import br.edu.ifce.eventif.service.DemoDataService;
 import br.edu.ifce.eventif.service.SeedService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,11 @@ public class DataInitializer {
     }
 
     @Bean
-    ApplicationRunner initializeData(SeedService seedService) {
-        return args -> seedService.initialize();
+    ApplicationRunner initializeData(SeedService seedService, DemoDataService demoData,
+                                     @Value("${DEMO_DATA:false}") boolean demoEnabled) {
+        return args -> {
+            seedService.initialize();
+            if (demoEnabled) demoData.initialize(); // dados extras só para a gravação do vídeo
+        };
     }
 }
