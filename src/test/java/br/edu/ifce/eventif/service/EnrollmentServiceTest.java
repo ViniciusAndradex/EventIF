@@ -1,5 +1,6 @@
 package br.edu.ifce.eventif.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -49,7 +50,8 @@ class EnrollmentServiceTest {
         when(activity.getEndDateTime()).thenReturn(LocalDateTime.of(2030, 1, 1, 12, 0));
         when(enrollments.existsByUserIdAndActivityId(1L, 2L)).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> service.enroll(2L, "aluno@example.com"));
+        var error = assertThrows(IllegalArgumentException.class, () -> service.enroll(2L, "aluno@example.com"));
+        assertEquals("Você já está inscrito nesta atividade.", error.getMessage());
         verify(enrollments, never()).save(any());
     }
 }

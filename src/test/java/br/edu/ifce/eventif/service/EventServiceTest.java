@@ -1,6 +1,7 @@
 package br.edu.ifce.eventif.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -49,7 +50,8 @@ class EventServiceTest {
 
     @Test void rejectsEndBeforeStart() {
         EventForm form = form(LocalDate.of(2030, 5, 2), LocalDate.of(2030, 5, 1));
-        assertThrows(IllegalArgumentException.class, () -> service.create(form, "dono"));
+        var error = assertThrows(IllegalArgumentException.class, () -> service.create(form, "dono"));
+        assertEquals("A data de término não pode ser anterior à data de início.", error.getMessage());
         verify(events, never()).save(org.mockito.ArgumentMatchers.any());
     }
 
@@ -69,7 +71,8 @@ class EventServiceTest {
         when(event.getStatus()).thenReturn(EventStatus.DRAFT);
         when(activities.findByEventId(1L)).thenReturn(List.of(activity));
         when(activity.getStartDateTime()).thenReturn(LocalDateTime.of(2030, 5, 1, 9, 0));
-        assertThrows(IllegalArgumentException.class, () -> service.update(1L, form, "dono"));
+        var error = assertThrows(IllegalArgumentException.class, () -> service.update(1L, form, "dono"));
+        assertEquals("As atividades devem permanecer dentro do período do evento.", error.getMessage());
         verify(event, never()).setStartDate(org.mockito.ArgumentMatchers.any());
     }
 }

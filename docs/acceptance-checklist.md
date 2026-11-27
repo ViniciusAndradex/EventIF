@@ -66,7 +66,9 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 - [ ] RT04: verificar verbos HTTP e PUT/DELETE de formulários via filtro.
 - [ ] RT05: inspecionar seis entidades, enums String, restrições de unicidade e ausência de cascata destrutiva.
 - [ ] EX03: abrir HTML imprimível e PDF OpenHTMLtoPDF e conferir dados.
-- [ ] EX04: executar apenas testes automatizados previstos com JUnit 5/Mockito sem PostgreSQL; conferir que regras excluídas são verificadas manualmente e registradas.
+- [x] EX04: executar apenas testes automatizados previstos com JUnit 5/Mockito sem PostgreSQL; conferir que regras excluídas são verificadas manualmente e registradas.
+
+  Verificação em 27/11/2026: `mvn test` em contêiner `maven:3.9-eclipse-temurin-21`, sem PostgreSQL. Classes: `UserServiceTest` (RN01, 1), `EventServiceTest` (RN02, 3), `ActivityServiceTest` (RN02, 5) e `EnrollmentServiceTest` (RN04, 1, com `Clock` fixo). Resultado: 10 testes, 0 falhas, 0 erros. Os testes conferem a mensagem da regra violada e que nada é salvo. Não há testes automatizados de RN03, RN05, RN06, RN07, concorrência, controllers, segurança ou PDF.
 
 ## Entrega
 
