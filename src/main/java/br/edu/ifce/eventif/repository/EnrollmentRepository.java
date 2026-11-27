@@ -12,8 +12,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     boolean existsByUserIdAndActivityId(Long userId, Long activityId);
     Optional<Enrollment> findByUserIdAndActivityId(Long userId, Long activityId);
     long countByActivityId(Long activityId);
-    List<Enrollment> findByActivityId(Long activityId);
-    List<Enrollment> findByUserId(Long userId);
+    List<Enrollment> findByActivityIdOrderByUserNameAscIdAsc(Long activityId);
+    List<Enrollment> findByUserIdOrderByActivityStartDateTimeAscIdAsc(Long userId);
     List<Enrollment> findByUserIdAndActivityEventIdAndPresentTrue(Long userId, Long eventId);
 
     @Query("select e from Enrollment e join fetch e.activity a join fetch a.event event "

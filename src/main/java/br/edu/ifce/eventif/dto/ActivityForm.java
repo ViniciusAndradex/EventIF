@@ -15,7 +15,7 @@ public class ActivityForm {
     private LocalDateTime startDateTime;
     @NotNull(message = "Informe o término.") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDateTime;
-    @NotNull(message = "Informe o número de vagas.") @Min(value = 1, message = "O número de vagas deve ser maior que zero.")
+    @NotNull(message = "Informe o número de vagas.") @Positive(message = "O número de vagas deve ser maior que zero.")
     private Integer capacity;
     public String getTitle() { return title; } public void setTitle(String v) { title = v; }
     public ActivityType getType() { return type; } public void setType(ActivityType v) { type = v; }

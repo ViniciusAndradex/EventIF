@@ -12,6 +12,8 @@ import br.edu.ifce.eventif.repository.UserRepository;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -78,7 +80,7 @@ public class EnrollmentService {
     @Transactional(readOnly = true)
     public List<Enrollment> listMine(String email) {
         User participant = participant(email);
-        List<Enrollment> result = enrollments.findByUserId(participant.getId());
+        List<Enrollment> result = enrollments.findByUserIdOrderByActivityStartDateTimeAscIdAsc(participant.getId());
         result.forEach(enrollment -> enrollment.getActivity().getEvent().getTitle());
         return result;
     }
@@ -86,8 +88,8 @@ public class EnrollmentService {
     @Transactional(readOnly = true)
     public Roster roster(Long eventId, Long activityId, String email) {
         Event event = ownedEvent(eventId, email);
-        Activity activity = activityForEvent(activityId, eventId);
-        List<Enrollment> result = enrollments.findByActivityId(activityId);
+        Activity activity = activityForEvent(activityId, eventId, email);
+        List<Enrollment> result = enrollments.findByActivityIdOrderByUserNameAscIdAsc(activityId);
         result.forEach(enrollment -> enrollment.getUser().getName());
         LocalDateTime now = LocalDateTime.now(clock);
         boolean canMark = event.getStatus() != EventStatus.CLOSED
@@ -96,13 +98,18 @@ public class EnrollmentService {
     }
 
     @Transactional
-    public void markPresent(Long eventId, Long activityId, Long enrollmentId, String email) {
-        Event event = events.findById(eventId).orElseThrow(this::notFound);
-        checkOwner(event, email);
-        Activity activity = activities.findById(activityId).orElseThrow(this::notFound);
-        if (!activity.getEvent().getId().equals(eventId)) throw notFound();
-        Enrollment enrollment = enrollments.findById(enrollmentId).orElseThrow(this::notFound);
-        if (!enrollment.getActivity().getId().equals(activityId)) throw notFound();
+    public void updatePresence(Long eventId, Long activityId, Set<Long> presentIds, String email) {
+        Event event = ownedEvent(eventId, email);
+        Activity activity = activityForEvent(activityId, eventId, email);
+        List<Enrollment> roster = enrollments.findByActivityIdOrderByUserNameAscIdAsc(activityId);
+        Set<Long> checked = presentIds == null ? Set.of() : presentIds;
+        Set<Long> rosterIds = roster.stream().map(Enrollment::getId).collect(Collectors.toSet());
+        for (Long id : checked) {
+            if (rosterIds.contains(id)) continue;
+            // Inscrição de atividade de outro organizador: 403; de outra atividade própria ou inexistente: 404.
+            enrollments.findById(id).ifPresent(other -> checkOwner(other.getActivity().getEvent(), email));
+            throw notFound();
+        }
         if (event.getStatus() == EventStatus.CLOSED) {
             throw new IllegalArgumentException("Eventos encerrados não permitem alterações de presença.");
         }
@@ -110,7 +117,7 @@ public class EnrollmentService {
         if (now.isBefore(activity.getStartDateTime()) || !now.isBefore(activity.getEndDateTime())) {
             throw new IllegalArgumentException("A presença só pode ser marcada durante a atividade.");
         }
-        enrollment.setPresent(true);
+        roster.forEach(enrollment -> enrollment.setPresent(checked.contains(enrollment.getId())));
     }
 
     private User participant(String email) {
@@ -132,8 +139,9 @@ public class EnrollmentService {
         }
     }
 
-    private Activity activityForEvent(Long activityId, Long eventId) {
+    private Activity activityForEvent(Long activityId, Long eventId, String email) {
         Activity activity = activities.findById(activityId).orElseThrow(this::notFound);
+        checkOwner(activity.getEvent(), email);
         if (!activity.getEvent().getId().equals(eventId)) throw notFound();
         return activity;
     }

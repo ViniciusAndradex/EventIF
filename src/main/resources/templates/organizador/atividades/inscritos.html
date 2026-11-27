@@ -8,15 +8,20 @@
     <div class="alert alert-success mt-3" th:if="${success}" th:text="${success}"></div>
     <div class="alert alert-danger mt-3" th:if="${error}" th:text="${error}"></div>
     <p class="mt-3" th:if="${#lists.isEmpty(roster.enrollments)}">Nenhuma inscrição nesta atividade.</p>
-    <div class="table-responsive mt-3" th:unless="${#lists.isEmpty(roster.enrollments)}"><table class="table align-middle">
-        <thead><tr><th>Participante</th><th>Email</th><th>Presença</th><th>Ações</th></tr></thead>
-        <tbody><tr th:each="enrollment : ${roster.enrollments}">
-            <td th:text="${enrollment.user.name}"></td><td th:text="${enrollment.user.email}"></td>
-            <td th:text="${enrollment.present} ? 'Presente' : 'Não registrada'"></td>
-            <td><form th:if="${roster.canMark and !enrollment.present}" th:action="@{/organizador/eventos/{eventId}/atividades/{activityId}/inscricoes/{id}/presenca(eventId=${roster.event.id},activityId=${roster.activity.id},id=${enrollment.id})}" method="post">
-                <input type="hidden" name="_method" value="put">
-                <button type="submit" class="btn btn-primary btn-sm">Marcar presença</button>
-            </form></td>
-        </tr></tbody>
-    </table></div>
+    <form th:unless="${#lists.isEmpty(roster.enrollments)}" method="post"
+          th:action="@{/organizador/eventos/{eventId}/atividades/{activityId}/inscricoes/presenca(eventId=${roster.event.id},activityId=${roster.activity.id})}">
+        <input type="hidden" name="_method" value="put">
+        <p class="text-body-secondary mt-3" th:unless="${roster.canMark}">A presença só pode ser registrada durante a atividade e enquanto o evento não estiver encerrado.</p>
+        <div class="table-responsive mt-3"><table class="table align-middle">
+            <thead><tr><th>Presente</th><th>Participante</th><th>Email</th></tr></thead>
+            <tbody><tr th:each="enrollment : ${roster.enrollments}">
+                <td><input class="form-check-input" type="checkbox" name="presentes"
+                           th:id="'presente-' + ${enrollment.id}" th:value="${enrollment.id}"
+                           th:checked="${enrollment.present}" th:disabled="${!roster.canMark}"></td>
+                <td><label th:for="'presente-' + ${enrollment.id}" th:text="${enrollment.user.name}"></label></td>
+                <td th:text="${enrollment.user.email}"></td>
+            </tr></tbody>
+        </table></div>
+        <button th:if="${roster.canMark}" type="submit" class="btn btn-primary">Salvar presenças</button>
+    </form>
 </main></body></html>
