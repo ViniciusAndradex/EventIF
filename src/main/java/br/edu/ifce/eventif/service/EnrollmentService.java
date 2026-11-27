@@ -38,7 +38,7 @@ public class EnrollmentService {
     @Transactional
     public void enroll(Long activityId, String email) {
         User participant = participant(email);
-        Activity activity = lockActivity(activityId);
+        Activity activity = activities.findById(activityId).orElseThrow(this::notFound);
         Event event = activity.getEvent();
         LocalDateTime now = LocalDateTime.now(clock);
         if (event.getStatus() != EventStatus.PUBLISHED) {
@@ -63,7 +63,7 @@ public class EnrollmentService {
         if (!existing.getUser().getId().equals(participant.getId())) {
             throw new AccessDeniedException("Inscrição de outro participante.");
         }
-        Activity activity = lockActivity(existing.getActivity().getId());
+        Activity activity = activities.findById(existing.getActivity().getId()).orElseThrow(this::notFound);
         Enrollment enrollment = enrollments.findByUserIdAndActivityId(participant.getId(), activity.getId())
                 .filter(item -> item.getId().equals(enrollmentId)).orElseThrow(this::notFound);
         if (activity.getEvent().getStatus() == EventStatus.CLOSED) {
@@ -97,9 +97,9 @@ public class EnrollmentService {
 
     @Transactional
     public void markPresent(Long eventId, Long activityId, Long enrollmentId, String email) {
-        Event event = events.findByIdForUpdate(eventId).orElseThrow(this::notFound);
+        Event event = events.findById(eventId).orElseThrow(this::notFound);
         checkOwner(event, email);
-        Activity activity = activities.findByIdForUpdate(activityId).orElseThrow(this::notFound);
+        Activity activity = activities.findById(activityId).orElseThrow(this::notFound);
         if (!activity.getEvent().getId().equals(eventId)) throw notFound();
         Enrollment enrollment = enrollments.findById(enrollmentId).orElseThrow(this::notFound);
         if (!enrollment.getActivity().getId().equals(activityId)) throw notFound();
@@ -111,12 +111,6 @@ public class EnrollmentService {
             throw new IllegalArgumentException("A presença só pode ser marcada durante a atividade.");
         }
         enrollment.setPresent(true);
-    }
-
-    private Activity lockActivity(Long activityId) {
-        Long eventId = activities.findEventIdByActivityId(activityId).orElseThrow(this::notFound);
-        events.findByIdForUpdate(eventId).orElseThrow(this::notFound);
-        return activities.findByIdForUpdate(activityId).orElseThrow(this::notFound);
     }
 
     private User participant(String email) {

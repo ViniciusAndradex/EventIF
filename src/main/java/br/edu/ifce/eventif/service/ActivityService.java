@@ -25,7 +25,7 @@ public class ActivityService {
         this.events = events; this.activities = activities; this.enrollments = enrollments;
     }
     @Transactional(readOnly = true)
-    public Event event(Long id, String email) { 
+    public Event event(Long id, String email) {
         return owned(events.findById(id).orElseThrow(() -> notFound()), email);
      }
     @Transactional(readOnly = true)
@@ -36,22 +36,22 @@ public class ActivityService {
         return activityForEvent(activities.findById(activityId).orElseThrow(() -> notFound()), eventId, email);
     }
     @Transactional(readOnly = true)
-    public Event editableEvent(Long eventId, String email) { 
-        Event event = event(eventId, email); 
-        editable(event); 
-        return event; 
+    public Event editableEvent(Long eventId, String email) {
+        Event event = event(eventId, email);
+        editable(event);
+        return event;
     }
     @Transactional
     public void create(Long eventId, ActivityForm form, String email) {
-        Event event = lockedEvent(eventId, email); 
+        Event event = ownedEvent(eventId, email);
         editable(event); int workload = validate(form, event);
         activities.save(new Activity(form.getTitle().strip(), form.getType(), form.getInstructor().strip(),
                 form.getStartDateTime(), form.getEndDateTime(), workload, form.getCapacity(), event));
     }
     @Transactional
     public void update(Long eventId, Long activityId, ActivityForm form, String email) {
-        Event event = lockedEvent(eventId, email);
-        Activity activity = lockedActivity(activityId, eventId, email); editable(event);
+        Event event = ownedEvent(eventId, email);
+        Activity activity = ownedActivity(activityId, eventId, email); editable(event);
         int workload = validate(form, event);
         if (form.getCapacity() < enrollments.countByActivityId(activityId))
             throw new IllegalArgumentException("O número de vagas não pode ser menor que o número de inscritos.");
@@ -61,30 +61,30 @@ public class ActivityService {
     }
     @Transactional
     public void delete(Long eventId, Long activityId, String email) {
-        Event event = lockedEvent(eventId, email);
-        Activity activity = lockedActivity(activityId, eventId, email); 
+        Event event = ownedEvent(eventId, email);
+        Activity activity = ownedActivity(activityId, eventId, email);
         editable(event);
         if (enrollments.countByActivityId(activityId) > 0) throw new IllegalArgumentException("Não é possível excluir uma atividade com inscrições.");
         if (event.getStatus() == EventStatus.PUBLISHED && activities.countByEventId(eventId) <= 1)
             throw new IllegalArgumentException("Um evento publicado deve manter pelo menos uma atividade.");
-        try { 
-            activities.delete(activity); 
-            activities.flush(); 
+        try {
+            activities.delete(activity);
+            activities.flush();
         }
-        catch (DataIntegrityViolationException ex) { 
-            throw new IllegalArgumentException("Não é possível excluir uma atividade com inscrições."); 
+        catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Não é possível excluir uma atividade com inscrições.");
         }
     }
-    private Event lockedEvent(Long id, String email) { 
-        return owned(events.findByIdForUpdate(id).orElseThrow(() -> notFound()), email); 
+    private Event ownedEvent(Long id, String email) {
+        return owned(events.findById(id).orElseThrow(() -> notFound()), email);
     }
     private Event owned(Event event, String email) {
-        if (!event.getOrganizer().getEmail().equals(email)) 
+        if (!event.getOrganizer().getEmail().equals(email))
             throw new AccessDeniedException("Evento de outro organizador.");
         return event;
     }
-    private Activity lockedActivity(Long id, Long eventId, String email) {
-        return activityForEvent(activities.findByIdForUpdate(id).orElseThrow(() -> notFound()), eventId, email);
+    private Activity ownedActivity(Long id, Long eventId, String email) {
+        return activityForEvent(activities.findById(id).orElseThrow(() -> notFound()), eventId, email);
     }
     private Activity activityForEvent(Activity activity, Long eventId, String email) {
         owned(activity.getEvent(), email);
@@ -105,7 +105,7 @@ public class ActivityService {
             throw new IllegalArgumentException("A duração deve ter pelo menos um minuto inteiro e estar dentro do limite permitido.");
         return (int) total;
     }
-    private ResponseStatusException notFound() { 
-        return new ResponseStatusException(HttpStatus.NOT_FOUND); 
+    private ResponseStatusException notFound() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }

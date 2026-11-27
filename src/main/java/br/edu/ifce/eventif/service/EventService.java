@@ -64,7 +64,7 @@ public class EventService {
 
     @Transactional
     public void update(Long id, EventForm form, String email) {
-        Event event = lockedOwned(id, email);
+        Event event = findOwned(id, email);
         ensureEditable(event);
         validateDates(form);
         boolean outside = activities.findByEventId(id).stream().anyMatch(activity ->
@@ -81,7 +81,7 @@ public class EventService {
 
     @Transactional
     public void publish(Long id, String email) {
-        Event event = lockedOwned(id, email);
+        Event event = findOwned(id, email);
         if (event.getStatus() != EventStatus.DRAFT) throw new IllegalArgumentException("Somente eventos em rascunho podem ser publicados.");
         if (activities.countByEventId(id) == 0) throw new IllegalArgumentException("Inclua pelo menos uma atividade antes de publicar.");
         event.setStatus(EventStatus.PUBLISHED);
@@ -89,14 +89,14 @@ public class EventService {
 
     @Transactional
     public void close(Long id, String email) {
-        Event event = lockedOwned(id, email);
+        Event event = findOwned(id, email);
         if (event.getStatus() != EventStatus.PUBLISHED) throw new IllegalArgumentException("Somente eventos publicados podem ser encerrados.");
         event.setStatus(EventStatus.CLOSED);
     }
 
     @Transactional
     public void delete(Long id, String email) {
-        Event event = lockedOwned(id, email);
+        Event event = findOwned(id, email);
         ensureEditable(event);
         if (activities.countByEventId(id) > 0) throw new IllegalArgumentException("Não é possível excluir o evento porque há atividades associadas.");
         try { 
@@ -106,11 +106,6 @@ public class EventService {
         catch (DataIntegrityViolationException ex) { throw new IllegalArgumentException("Não é possível excluir o evento porque há dependências associadas."); }
     }
 
-    private Event lockedOwned(Long id, String email) {
-        return checkOwner(
-            events.findByIdForUpdate(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)), email);
-    }
     private Event checkOwner(Event event, String email) {
         if (!event.getOrganizer().getEmail().equals(email)) throw new AccessDeniedException("Evento de outro organizador.");
         return event;

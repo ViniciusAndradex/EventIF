@@ -25,7 +25,7 @@ Ao retirar ORGANIZADOR, bloquear se houver eventos PUBLISHED; se houver somente 
 | Durante | Permitida se PUBLISHED, houver vaga e não houver duplicata | Bloqueado | Permitida se evento não CLOSED |
 | Após término | Bloqueada | Bloqueado | Bloqueada |
 
-Para tornar os limites operacionais, considera-se durante `startDateTime <= agora < endDateTime`; no instante do término aplicam-se os bloqueios posteriores. A matrícula exige PUBLISHED em qualquer momento. O encerramento bloqueia todas as alterações, inclusive inscrição, cancelamento e presença. `Clock` injetável quando necessário; verificar e gravar capacidade na mesma transação com lock para impedir excesso concorrente.
+Para tornar os limites operacionais, considera-se durante `startDateTime <= agora < endDateTime`; no instante do término aplicam-se os bloqueios posteriores. A matrícula exige PUBLISHED em qualquer momento. O encerramento bloqueia todas as alterações, inclusive inscrição, cancelamento e presença. `Clock` injetável quando necessário; verificar a capacidade antes de gravar a inscrição, sem lock explícito; inscrições simultâneas podem ultrapassar a capacidade.
 
 ## Validações
 
@@ -33,7 +33,7 @@ Para tornar os limites operacionais, considera-se durante `startDateTime <= agor
 |---|---|
 | Email | Único (RN01). |
 | Datas | Fim do evento >= início; fim da atividade > início; atividade dentro das datas inclusivas do evento (RN02). |
-| Inscrição | Evento PUBLISHED (RN03), sem duplicata por usuário/atividade (RN04), capacidade não excedida (RN05), respeitando tempo. |
+| Inscrição | Evento PUBLISHED (RN03), sem duplicata por usuário/atividade (RN04), capacidade verificada antes da inscrição (RN05; sem garantia sob concorrência), respeitando tempo. |
 | Cancelamento | Antes do início (RN06) e evento não CLOSED. |
 | Certificado | Evento CLOSED e ao menos uma presença do usuário (RN07); carga é a soma das atividades com presença. |
 | Publicação | Pelo menos uma atividade. |

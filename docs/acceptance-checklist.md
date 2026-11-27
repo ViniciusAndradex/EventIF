@@ -43,7 +43,7 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 - [ ] RN02: testar limites e datas inválidas de evento/atividade, inclusive limites inclusivos; executar testes de EventService e ActivityService.
 - [x] RN03: tentar inscrição em DRAFT, PUBLISHED e CLOSED (ver registro de RF10–RF12).
 - [x] RN04: tentar inscrição repetida; executar teste de EnrollmentService (ver registro de RF10–RF12).
-- [x] RN05: preencher capacidade, tentar exceder e reduzir abaixo dos inscritos; registrar tentativa concorrente com última vaga e resultado sem excesso (redução ver RF06; concorrência ver RF10–RF12).
+- [ ] RN05: verificar sequencialmente a capacidade e a recusa de inscrição quando estiver cheia. Proteção contra inscrições simultâneas está fora do escopo; a capacidade pode ser ultrapassada em concorrência. O resultado simultâneo registrado em RF10–RF12 é histórico e antecede a retirada dos locks.
 - [ ] RN06: cancelar antes, no início, durante e após término; conferir bloqueio em CLOSED.
 - [ ] RN07: testar evento aberto/fechado e ausência/presença registrada, incluindo soma apenas das cargas com presença.
 - [ ] Conferir início inclusivo/fim exclusivo nas três operações, bloqueio de alteração em CLOSED, revogação de organizador com DRAFT/PUBLISHED, exclusões e ausência de cascata destrutiva.
@@ -64,7 +64,7 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 - [ ] RT02: inspecionar pacote, camadas, inglês no código e regras/transações nos services.
 - [ ] RT03: inspecionar Dockerfile, Compose, `application.yml`, Hibernate update e dependências proibidas.
 - [ ] RT04: verificar verbos HTTP e PUT/DELETE de formulários via filtro.
-- [ ] RT05: inspecionar seis entidades, enums String, restrições de unicidade, proteção de concorrência e ausência de cascata destrutiva.
+- [ ] RT05: inspecionar seis entidades, enums String, restrições de unicidade e ausência de cascata destrutiva.
 - [ ] EX03: abrir HTML imprimível e PDF OpenHTMLtoPDF e conferir dados.
 - [ ] EX04: executar apenas testes automatizados previstos com JUnit 5/Mockito sem PostgreSQL; conferir que regras excluídas são verificadas manualmente e registradas.
 
