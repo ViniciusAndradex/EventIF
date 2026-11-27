@@ -16,6 +16,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/eventos/**", "/cadastro", "/login", "/error", "/webjars/**").permitAll()
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/organizador", "/organizador/**").hasRole("ORGANIZADOR")
+                        .requestMatchers("/inscricoes", "/inscricoes/**").hasRole("PARTICIPANTE")
                         .anyRequest().authenticated())
                 .formLogin(form -> 
                     form.loginPage("/login")

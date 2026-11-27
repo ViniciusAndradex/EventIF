@@ -29,9 +29,11 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 - [x] RF09: detalhe publicado mostra atividades/vagas; URLs de DRAFT e CLOSED retornam 404.
 
   Verificação manual no mesmo ambiente: detalhe publicado retornou 200 com atividade de capacidade 30, um inscrito e 29 vagas restantes; visitante não recebeu estado pessoal de inscrição. Após login como PARTICIPANTE inscrito, o detalhe indicou a inscrição. IDs de evento encerrado, rascunho e inexistente retornaram 404.
-- [ ] RF10: inscrever e cancelar nos estados e momentos permitidos; conferir bloqueios.
-- [ ] RF11: conferir inscrições/presenças do usuário da sessão, sem acesso às de terceiros.
-- [ ] RF12: organizador lista inscritos e marca presença nos momentos permitidos; testar recurso alheio.
+- [x] RF10: inscrever e cancelar nos estados e momentos permitidos; conferir bloqueios.
+- [x] RF11: conferir inscrições/presenças do usuário da sessão, sem acesso às de terceiros.
+- [x] RF12: organizador lista inscritos e marca presença nos momentos permitidos; testar recurso alheio.
+
+  Verificação manual em 26/11/2026: Java 21 e PostgreSQL 16 em Docker Compose isolado; dados e horários preparados no banco, requisições HTTP com sessões e CSRF. Inscrição em DRAFT/CLOSED e após término foi recusada; antes e durante foi aceita. Duplicata foi recusada. Cancelamento próprio antes foi aceito; durante, após término e em CLOSED foi recusado; tentativa sobre inscrição alheia retornou 403. O dono listou inscritos e registrou presença durante; outro organizador recebeu 403 para lista e alteração. Presença antes, após término e em CLOSED foi recusada; a presença registrada apareceu em Minhas inscrições. Participante recebeu 403 na organização e organizador recebeu 403 em /inscricoes. Em duas requisições simultâneas de participantes distintos para capacidade 1, uma inscrição foi aceita e a outra recusada; o banco confirmou um inscrito. Roteiro: [FT07](ft07-validacao-manual.md).
 - [ ] RF13: usuário elegível acessa HTML imprimível e PDF com nome, evento e soma correta; inelegível é bloqueado.
 - [ ] RF14: executar seed mais de uma vez e conferir duas categorias, dois eventos com atividades e usuário de cada perfil sem duplicações.
 
@@ -39,9 +41,9 @@ Registrar data, ambiente, resultado e evidência de cada verificação manual, i
 
 - [ ] RN01: tentar email repetido; executar teste unitário de UserService.
 - [ ] RN02: testar limites e datas inválidas de evento/atividade, inclusive limites inclusivos; executar testes de EventService e ActivityService.
-- [ ] RN03: tentar inscrição em DRAFT, PUBLISHED e CLOSED.
-- [ ] RN04: tentar inscrição repetida; executar teste de EnrollmentService.
-- [ ] RN05: preencher capacidade, tentar exceder e reduzir abaixo dos inscritos; registrar tentativa concorrente com última vaga e resultado sem excesso.
+- [x] RN03: tentar inscrição em DRAFT, PUBLISHED e CLOSED (ver registro de RF10–RF12).
+- [x] RN04: tentar inscrição repetida; executar teste de EnrollmentService (ver registro de RF10–RF12).
+- [x] RN05: preencher capacidade, tentar exceder e reduzir abaixo dos inscritos; registrar tentativa concorrente com última vaga e resultado sem excesso (redução ver RF06; concorrência ver RF10–RF12).
 - [ ] RN06: cancelar antes, no início, durante e após término; conferir bloqueio em CLOSED.
 - [ ] RN07: testar evento aberto/fechado e ausência/presença registrada, incluindo soma apenas das cargas com presença.
 - [ ] Conferir início inclusivo/fim exclusivo nas três operações, bloqueio de alteração em CLOSED, revogação de organizador com DRAFT/PUBLISHED, exclusões e ausência de cascata destrutiva.

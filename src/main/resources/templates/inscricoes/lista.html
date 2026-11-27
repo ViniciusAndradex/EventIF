@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Minhas inscrições', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+    <h1>Minhas inscrições</h1>
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+    <p th:if="${#lists.isEmpty(enrollments)}">Você ainda não possui inscrições.</p>
+    <div class="table-responsive" th:unless="${#lists.isEmpty(enrollments)}"><table class="table align-middle">
+        <thead><tr><th>Evento</th><th>Atividade</th><th>Início</th><th>Presença</th><th>Ações</th></tr></thead>
+        <tbody><tr th:each="enrollment : ${enrollments}">
+            <td th:text="${enrollment.activity.event.title}"></td>
+            <td th:text="${enrollment.activity.title}"></td>
+            <td th:text="${#temporals.format(enrollment.activity.startDateTime, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${enrollment.present} ? 'Presente' : 'Não registrada'"></td>
+            <td><form th:action="@{/inscricoes/{id}(id=${enrollment.id})}" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="btn btn-outline-danger btn-sm">Cancelar inscrição</button>
+            </form></td>
+        </tr></tbody>
+    </table></div>
+</main></body></html>
