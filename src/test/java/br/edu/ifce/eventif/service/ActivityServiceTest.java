@@ -26,7 +26,7 @@ class ActivityServiceTest {
     ActivityService service;
     @BeforeEach void setUp() {
         service = new ActivityService(events, activities, enrollments);
-        when(events.findByIdForUpdate(1L)).thenReturn(Optional.of(event));
+        when(events.findById(1L)).thenReturn(Optional.of(event));
         when(event.getOrganizer()).thenReturn(organizer);
         when(organizer.getEmail()).thenReturn("dono");
         when(event.getStatus()).thenReturn(EventStatus.DRAFT);

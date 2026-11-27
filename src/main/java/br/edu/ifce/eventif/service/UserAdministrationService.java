@@ -50,7 +50,7 @@ public class UserAdministrationService {
     }
 
     private User findModifiableUser(Long id) {
-        User user = users.findForRoleChange(id)
+        User user = users.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
         if (hasRole(user, "ROLE_ADMIN")) {
             throw new IllegalArgumentException("Não é permitido alterar o papel de um administrador.");

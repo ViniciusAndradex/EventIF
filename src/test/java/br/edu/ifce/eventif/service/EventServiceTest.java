@@ -63,7 +63,7 @@ class EventServiceTest {
 
     @Test void rejectsDatesThatExcludeExistingActivity() {
         EventForm form = form(LocalDate.of(2030, 5, 2), LocalDate.of(2030, 5, 3));
-        when(events.findByIdForUpdate(1L)).thenReturn(Optional.of(event));
+        when(events.findById(1L)).thenReturn(Optional.of(event));
         when(event.getOrganizer()).thenReturn(organizer);
         when(organizer.getEmail()).thenReturn("dono");
         when(event.getStatus()).thenReturn(EventStatus.DRAFT);

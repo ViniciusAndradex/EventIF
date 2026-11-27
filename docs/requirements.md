@@ -29,7 +29,7 @@ Fonte normativa: [Contexto Mestre](project-context.md). Os identificadores RF, R
 | RN02 | Fim do evento não antecede início; fim da atividade é posterior ao início e ambos estão no período inclusivo do evento. |
 | RN03 | Inscrição somente em evento PUBLISHED, sujeita também às regras temporais. |
 | RN04 | Um usuário não pode ter inscrição duplicada na mesma atividade. |
-| RN05 | Inscrições não ultrapassam capacidade, inclusive sob concorrência. |
+| RN05 | Verificar a capacidade antes da inscrição; não há garantia contra inscrições simultâneas. |
 | RN06 | Cancelamento somente antes do início da atividade e enquanto o evento não estiver CLOSED. |
 | RN07 | Certificado somente para evento CLOSED e usuário com ao menos uma presença nele. |
 
@@ -63,6 +63,6 @@ As regras adicionais de ciclo de vida, revogação, carga horária e tempo const
 | RT02 | Pacote `br.edu.ifce.eventif`, camadas controller → service → repository, código em inglês; regras e transações em services. |
 | RT03 | Git, Dockerfile, Docker Compose, `application.yml`, Hibernate `ddl-auto=update`; sem Flyway, Lombok, MapStruct ou dependências desnecessárias. |
 | RT04 | GET consulta/página, POST cria, PUT atualiza/ação de estado, DELETE remove; habilitar `HiddenHttpMethodFilter`. |
-| RT05 | Exatamente seis entidades JPA, enums como String, unicidade de email e de inscrição, proteção transacional da capacidade e nenhuma cascata destrutiva. |
+| RT05 | Exatamente seis entidades JPA, enums como String, unicidade de email e de inscrição, verificação de capacidade e nenhuma cascata destrutiva. |
 | EX03 | Certificado PDF com OpenHTMLtoPDF, além de página HTML imprimível. |
 | EX04 | JUnit 5 e Mockito, sem PostgreSQL; automatizar somente RN01, RN02 e RN04 nos services indicados no contexto. |

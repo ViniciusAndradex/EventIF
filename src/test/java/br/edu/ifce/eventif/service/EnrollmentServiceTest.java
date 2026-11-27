@@ -43,10 +43,8 @@ class EnrollmentServiceTest {
         when(participant.getRoles()).thenReturn(Set.of(role));
         when(role.getName()).thenReturn("ROLE_PARTICIPANTE");
         when(participant.getId()).thenReturn(1L);
-        when(activities.findEventIdByActivityId(2L)).thenReturn(Optional.of(3L));
         when(activity.getEvent()).thenReturn(event);
-        when(events.findByIdForUpdate(3L)).thenReturn(Optional.of(event));
-        when(activities.findByIdForUpdate(2L)).thenReturn(Optional.of(activity));
+        when(activities.findById(2L)).thenReturn(Optional.of(activity));
         when(event.getStatus()).thenReturn(EventStatus.PUBLISHED);
         when(activity.getEndDateTime()).thenReturn(LocalDateTime.of(2030, 1, 1, 12, 0));
         when(enrollments.existsByUserIdAndActivityId(1L, 2L)).thenReturn(true);
