@@ -10,10 +10,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findByStatusOrderByStartDateAscIdAsc(EventStatus status, Pageable pageable);
-    Page<Event> findByStatusAndCategoryIdOrderByStartDateAscIdAsc(EventStatus status, Long categoryId, Pageable pageable);
+
+    Page<Event> findByStatusAndCategoryIdOrderByStartDateAscIdAsc(EventStatus status, Long categoryId,
+            Pageable pageable);
+
     List<Event> findByOrganizerId(Long organizerId);
+
     List<Event> findByOrganizerIdAndStatus(Long organizerId, EventStatus status);
+
     boolean existsByOrganizerIdAndStatus(Long organizerId, EventStatus status);
+
     boolean existsByCategoryId(Long categoryId);
+
     Optional<Event> findFirstByTitleAndOrganizerId(String title, Long organizerId);
 }

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
     List<Activity> findByEventId(Long eventId);
+
     long countByEventId(Long eventId);
+
     Optional<Activity> findFirstByTitleAndEventId(String title, Long eventId);
 }

@@ -32,31 +32,34 @@ public class CertificateService {
     }
 
     @Transactional(readOnly = true)
-    public List<CertificateView> listMine(String email) {
-        User user = users.findByEmail(email)
-                .filter(u -> u.isActive() && u.getRoles().stream()
-                        .anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
+    public List<CertificateView> listCertificates(String email) {
+        User user = users.findByEmail(email).filter(
+                u -> u.isActive() && u.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
                 .orElseThrow(() -> new AccessDeniedException("Apenas participantes podem acessar certificados."));
         Map<Long, CertificateView> certificates = new LinkedHashMap<>();
-        for (Enrollment enrollment : enrollments.findCertificateEnrollments(user.getId(), EventStatus.CLOSED)) {
+        for (Enrollment enrollment : enrollments.findByUserIdWithActivityAndEvent(user.getId())) {
             var activity = enrollment.getActivity();
             var event = activity.getEvent();
+            if (!enrollment.isPresent() || event.getStatus() != EventStatus.CLOSED) {
+                continue;
+            }
             CertificateView previous = certificates.get(event.getId());
             long minutes = activity.getWorkloadMinutes() + (previous == null ? 0 : previous.workloadMinutes());
-            certificates.put(event.getId(), new CertificateView(event.getId(), user.getName(), event.getTitle(), minutes));
+            certificates.put(event.getId(),
+                    new CertificateView(event.getId(), user.getName(), event.getTitle(), minutes));
         }
         return List.copyOf(certificates.values());
     }
 
     @Transactional(readOnly = true)
-    public CertificateView findMine(Long eventId, String email) {
-        return listMine(email).stream().filter(certificate -> certificate.eventId().equals(eventId))
-                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public CertificateView findCertificates(Long eventId, String email) {
+        return listCertificates(email).stream().filter(certificate -> certificate.eventId().equals(eventId)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public byte[] generatePdf(Long eventId, String email) throws IOException {
-        CertificateView certificate = findMine(eventId, email);
+        CertificateView certificate = findCertificates(eventId, email);
         Context context = new Context();
         context.setVariable("certificate", certificate);
         context.setVariable("pdf", true);
@@ -73,8 +76,10 @@ public class CertificateService {
         public String formattedWorkload() {
             long hours = workloadMinutes / 60;
             long minutes = workloadMinutes % 60;
-            if (minutes == 0) return hours + (hours == 1 ? " hora" : " horas");
-            if (hours == 0) return minutes + (minutes == 1 ? " minuto" : " minutos");
+            if (minutes == 0)
+                return hours + (hours == 1 ? " hora" : " horas");
+            if (hours == 0)
+                return minutes + (minutes == 1 ? " minuto" : " minutos");
             return hours + (hours == 1 ? " hora e " : " horas e ") + minutes + (minutes == 1 ? " minuto" : " minutos");
         }
     }

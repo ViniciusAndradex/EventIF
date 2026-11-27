@@ -15,20 +15,30 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class AuthController {
     private final UserService users;
-    public AuthController(UserService users) { this.users = users; }
+
+    public AuthController(UserService users) {
+        this.users = users;
+    }
+
     @GetMapping("/login")
-    public String login() { return "login"; }
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/cadastro")
     public String registration(Model model) {
         model.addAttribute("registrationForm", new RegistrationForm());
         return "cadastro";
     }
+
     @PostMapping("/cadastro")
-    public String register(@Valid @ModelAttribute("registrationForm") RegistrationForm form,
-                           BindingResult errors, RedirectAttributes redirect) {
-        if (errors.hasErrors()) return "cadastro";
-        try { users.register(form); }
-        catch (IllegalArgumentException | DataIntegrityViolationException ex) {
+    public String register(@Valid @ModelAttribute("registrationForm") RegistrationForm form, BindingResult errors,
+            RedirectAttributes redirect) {
+        if (errors.hasErrors())
+            return "cadastro";
+        try {
+            users.register(form);
+        } catch (IllegalArgumentException | DataIntegrityViolationException ex) {
             errors.rejectValue("email", "duplicate", "Este email já está cadastrado.");
             return "cadastro";
         }

@@ -18,7 +18,6 @@ Trabalho final da disciplina **Tópicos em Java para a Web** (IFCE – Campus Fo
 | Caminho | O que instalar |
 |---|---|
 | **Docker (recomendado)** | Docker 24+ com o plugin Docker Compose v2 (`docker compose version`). Não precisa de Java, Maven nem PostgreSQL. |
-| Maven (alternativo) | Java 21 (JDK), Maven 3.9+ e PostgreSQL 16 em execução. |
 
 Portas usadas por padrão: **8080** (aplicação) e **5432** (PostgreSQL, só em 127.0.0.1). Se estiverem ocupadas, troque `APP_PORT` e `POSTGRES_PORT` no `.env`.
 
@@ -36,37 +35,27 @@ docker compose up --build
 Espere a linha `Started EventifApplication` no log e acesse **http://localhost:8080/**.
 
 - O Compose sobe dois serviços: `db` (PostgreSQL 16 com healthcheck e volume `postgres_data`) e `app` (build multi-stage do `Dockerfile`, que também compila o projeto com Maven).
-- A aplicação só inicia depois que o banco está saudável. O Hibernate cria as tabelas (`ddl-auto=update`) e o seed carrega os dados de demonstração.
+- A aplicação só inicia depois que o banco está saudável. O Hibernate cria as tabelas (`ddl-auto=update`) e o seed carrega os dados iniciais.
 - Para rodar em segundo plano: `docker compose up --build -d`. Para ver o log: `docker compose logs -f app`.
 - Para parar: `Ctrl+C` ou `docker compose down`. Para apagar também o banco: `docker compose down -v`.
 
-## Como subir sem Docker (alternativa Maven)
+### Cenário adicional de demonstração
 
-1. Com o PostgreSQL rodando, crie um banco e um usuário:
+Para subir a aplicação com dados extras para exercitar presença, inscrições, certificado e permissões, configure o `.env` como acima e execute:
 
-   ```sh
-   psql -U postgres -c "CREATE USER eventif WITH PASSWORD 'eventif';"
-   psql -U postgres -c "CREATE DATABASE eventif OWNER eventif;"
-   ```
+```sh
+DEMO_DATA=true docker compose up --build -d
+docker compose logs -f app
+```
 
-2. Na raiz do repositório, exporte as variáveis e inicie a aplicação:
+Além dos dados iniciais, a carga prepara:
 
-   ```sh
-   export DB_URL=jdbc:postgresql://localhost:5432/eventif
-   export DB_USERNAME=eventif
-   export DB_PASSWORD=eventif
-   export SEED_PASSWORD=test
-   export ADMIN_EMAIL=admin@test.com
-   export ORGANIZER_EMAIL=organizer@test.com
-   export PARTICIPANT_EMAIL=participant@test.com
-   export APP_TIME_ZONE=America/Fortaleza
-   export TZ=UTC
-   mvn spring-boot:run -Dspring-boot.run.jvmArguments=-Duser.timezone=UTC
-   ```
+- **Semana de Tecnologia IFCE**, evento publicado do organizador principal: a Oficina de Spring Boot está em andamento, com quatro inscritos, para demonstrar presença, a Palestra de Segurança Web está com sua única vaga ocupada; e o Minicurso de JPA é uma atividade futura.
+- **Jornada de Educação 2026**, evento encerrado com presenças do participante principal em duas atividades, para demonstrar o certificado imprimível e em PDF.
+- **Congresso de Computação**, evento publicado de outro organizador, para demonstrar a restrição de acesso aos eventos de terceiros.
+- Um segundo organizador (`organizador2@test.com`) e três participantes (`ana.souza@test.com`, `bruno.lima@test.com` e `carla.mendes@test.com`). Para usuários novos criados por essa carga, a senha é a definida em `SEED_PASSWORD` no `.env`.
 
-3. Acesse **http://localhost:8080/**.
-
-Também dá para usar só o banco do Compose: `cp .env.example .env`, `docker compose up -d db` e então `DB_URL=jdbc:postgresql://localhost:5432/<POSTGRES_DB>`, com `DB_USERNAME`/`DB_PASSWORD` iguais a `POSTGRES_USER`/`POSTGRES_PASSWORD` do `.env`.
+Esses dados são gravados no banco configurado. A carga procura reutilizar registros existentes e, ao iniciar novamente com `DEMO_DATA=true`, ajusta datas e horários de eventos e atividades de demonstração para manter os cenários atuais. Em um banco já utilizado, alterações anteriores podem fazer o cenário diferir do descrito; a carga não restaura todos os valores ou presenças. Para não executar a carga extra na próxima inicialização, suba com `DEMO_DATA=false` ou mantenha esse valor no `.env`; os dados já gravados permanecem no banco.
 
 ## Variáveis de ambiente
 
@@ -80,6 +69,7 @@ No Docker, ficam no arquivo `.env`, copiado de `.env.example`. O `.env.example` 
 | `POSTGRES_PORT` | não | Porta do PostgreSQL no host (só 127.0.0.1) | `5432` |
 | `APP_PORT` | não | Porta da aplicação no host | `8080` |
 | `APP_TIME_ZONE` | não | Fuso usado para comparar os horários das atividades | `America/Fortaleza` |
+| `DEMO_DATA` | não | Ativa a carga adicional para demonstração | `false` |
 | `SEED_PASSWORD` | sim | Senha dos usuários de demonstração (gravada com BCrypt) | `test` |
 | `ADMIN_EMAIL`, `ORGANIZER_EMAIL`, `PARTICIPANT_EMAIL` | sim | Emails dos usuários de demonstração | ver abaixo |
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | sim (Maven) | Conexão JDBC. No Docker, o Compose monta a partir das variáveis `POSTGRES_*`. | — |
@@ -105,7 +95,7 @@ Esses valores servem só para demonstração; não os use em produção.
 | Perfil | O que faz | Rotas |
 |---|---|---|
 | Visitante | Vê os eventos publicados (paginados, com filtro por categoria), os detalhes do evento com as vagas restantes e cria conta | `/`, `/eventos/{id}`, `/cadastro`, `/login` |
-| Participante | Inscreve-se em atividades, cancela antes do início, vê "Minhas inscrições" com a presença e emite o certificado (HTML imprimível e PDF) de eventos encerrados | `/inscricoes`, `/certificados` |
+| Participante | Inscreve-se em atividades, cancela antes do início da atividade, vê "Minhas inscrições" com a presença e emite o certificado (HTML imprimível e PDF) de eventos encerrados | `/inscricoes`, `/certificados` |
 | Organizador | CRUD dos próprios eventos (nascem em rascunho), publica e encerra, CRUD de atividades, lista os inscritos e marca presença por checkboxes | `/organizador/**` |
 | Administrador | CRUD de categorias, lista usuários e concede ou retira o perfil de organizador | `/admin/**` |
 

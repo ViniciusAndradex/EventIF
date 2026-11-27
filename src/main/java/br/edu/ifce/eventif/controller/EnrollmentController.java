@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class EnrollmentController {
     private final EnrollmentService enrollments;
 
-    public EnrollmentController(EnrollmentService enrollments) { this.enrollments = enrollments; }
+    public EnrollmentController(EnrollmentService enrollments) {
+        this.enrollments = enrollments;
+    }
 
     @GetMapping
     public String list(Principal principal, Model model) {

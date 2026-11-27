@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Cadastro', ~{::main})}">
-<body><main class="container flex-grow-1 py-4">
-<h1>Cadastro</h1>
-<form th:action="@{/cadastro}" th:object="${registrationForm}" method="post">
-<label for="name">Nome</label><input class="form-control" id="name" th:field="*{name}" required>
-<div class="text-danger" th:errors="*{name}"></div>
-<label for="email">Email</label><input class="form-control" id="email" type="email" th:field="*{email}" required>
-<div class="text-danger" th:errors="*{email}"></div>
-<label for="password">Senha</label><input class="form-control" id="password" type="password" th:field="*{password}" required>
-<div class="text-danger" th:errors="*{password}"></div>
-<button class="btn btn-primary mt-3" type="submit">Cadastrar</button>
-</form>
-</main></body></html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout('Cadastro', ~{::main})}">
+
+<body>
+    <main class="container flex-grow-1 py-4">
+        <h1>Cadastro</h1>
+        <form th:action="@{/cadastro}" th:object="${registrationForm}" method="post">
+            <label for="name">Nome</label><input class="form-control" id="name" th:field="*{name}" required>
+            <div class="text-danger" th:errors="*{name}"></div>
+            <label for="email">Email</label><input class="form-control" id="email" type="email" th:field="*{email}"
+                required>
+            <div class="text-danger" th:errors="*{email}"></div>
+            <label for="password">Senha</label><input class="form-control" id="password" type="password"
+                th:field="*{password}" required>
+            <div class="text-danger" th:errors="*{password}"></div>
+            <button class="btn btn-primary mt-3" type="submit">Cadastrar</button>
+        </form>
+    </main>
+</body>
+
+</html>

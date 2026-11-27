@@ -25,10 +25,11 @@ public class DataInitializer {
 
     @Bean
     ApplicationRunner initializeData(SeedService seedService, DemoDataService demoData,
-                                     @Value("${DEMO_DATA:false}") boolean demoEnabled) {
+            @Value("${DEMO_DATA:false}") boolean demoEnabled) {
         return args -> {
             seedService.initialize();
-            if (demoEnabled) demoData.initialize(); // dados extras só para a gravação do vídeo
+            if (demoEnabled)
+                demoData.initialize();
         };
     }
 }

@@ -44,14 +44,12 @@ public class UserAdministrationService {
         if (events.existsByOrganizerIdAndStatus(id, EventStatus.PUBLISHED)) {
             throw new IllegalArgumentException("Não é possível retirar o papel: o usuário possui evento publicado.");
         }
-        events.findByOrganizerIdAndStatus(id, EventStatus.DRAFT)
-                .forEach(event -> event.setStatus(EventStatus.CLOSED));
+        events.findByOrganizerIdAndStatus(id, EventStatus.DRAFT).forEach(event -> event.setStatus(EventStatus.CLOSED));
         user.setRole(roles.findByName("ROLE_PARTICIPANTE").orElseThrow());
     }
 
     private User findModifiableUser(Long id) {
-        User user = users.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+        User user = users.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
         if (hasRole(user, "ROLE_ADMIN")) {
             throw new IllegalArgumentException("Não é permitido alterar o papel de um administrador.");
         }

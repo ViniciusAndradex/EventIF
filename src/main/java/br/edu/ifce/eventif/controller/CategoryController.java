@@ -21,7 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CategoryController {
     private final CategoryService categories;
 
-    public CategoryController(CategoryService categories) { this.categories = categories; }
+    public CategoryController(CategoryService categories) {
+        this.categories = categories;
+    }
 
     @GetMapping
     public String list(Model model) {
@@ -35,27 +37,26 @@ public class CategoryController {
         return "admin/categorias/formulario";
     }
 
+    @GetMapping("/{id}/editar")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("categoryForm", categories.editForm(id));
+        model.addAttribute("categoryId", id);
+        return "admin/categorias/formulario";
+    }
+
     @PostMapping
-    public String create(@Valid @ModelAttribute("categoryForm") CategoryForm form,
-                         BindingResult errors, RedirectAttributes redirect) {
-        if (errors.hasErrors()) return "admin/categorias/formulario";
+    public String create(@Valid @ModelAttribute("categoryForm") CategoryForm form, BindingResult errors,
+            RedirectAttributes redirect) {
+        if (errors.hasErrors())
+            return "admin/categorias/formulario";
         categories.create(form);
         redirect.addFlashAttribute("success", "Categoria criada com sucesso.");
         return "redirect:/admin/categorias";
     }
 
-    @GetMapping("/{id}/editar")
-    public String editForm(@PathVariable Long id, Model model) {
-        CategoryForm form = new CategoryForm();
-        form.setName(categories.find(id).getName());
-        model.addAttribute("categoryForm", form);
-        model.addAttribute("categoryId", id);
-        return "admin/categorias/formulario";
-    }
-
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @Valid @ModelAttribute("categoryForm") CategoryForm form,
-                         BindingResult errors, Model model, RedirectAttributes redirect) {
+            BindingResult errors, Model model, RedirectAttributes redirect) {
         categories.find(id);
         if (errors.hasErrors()) {
             model.addAttribute("categoryId", id);

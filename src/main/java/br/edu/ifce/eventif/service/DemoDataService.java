@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Dados de demonstração para a gravação do vídeo. Só roda com DEMO_DATA=true.
- * É idempotente e, a cada subida, realinha os horários do evento aberto para que
+ * Dados de demonstração para a gravação do vídeo. Só roda com DEMO_DATA=true. É
+ * idempotente e, a cada subida, realinha os horários do evento aberto para que
  * a "Oficina de Spring Boot" esteja acontecendo no momento da gravação.
  */
 @Service
@@ -39,15 +39,21 @@ public class DemoDataService {
     private final String participantEmail;
 
     public DemoDataService(UserRepository users, RoleRepository roles, CategoryRepository categories,
-                           EventRepository events, ActivityRepository activities, EnrollmentRepository enrollments,
-                           PasswordEncoder passwordEncoder, Clock clock,
-                           @Value("${SEED_PASSWORD:}") String password,
-                           @Value("${ORGANIZER_EMAIL:}") String organizerEmail,
-                           @Value("${PARTICIPANT_EMAIL:}") String participantEmail) {
-        this.users = users; this.roles = roles; this.categories = categories; this.events = events;
-        this.activities = activities; this.enrollments = enrollments; this.passwordEncoder = passwordEncoder;
-        this.clock = clock; this.password = password;
-        this.organizerEmail = organizerEmail; this.participantEmail = participantEmail;
+            EventRepository events, ActivityRepository activities, EnrollmentRepository enrollments,
+            PasswordEncoder passwordEncoder, Clock clock, @Value("${SEED_PASSWORD:}") String password,
+            @Value("${ORGANIZER_EMAIL:}") String organizerEmail,
+            @Value("${PARTICIPANT_EMAIL:}") String participantEmail) {
+        this.users = users;
+        this.roles = roles;
+        this.categories = categories;
+        this.events = events;
+        this.activities = activities;
+        this.enrollments = enrollments;
+        this.passwordEncoder = passwordEncoder;
+        this.clock = clock;
+        this.password = password;
+        this.organizerEmail = organizerEmail;
+        this.participantEmail = participantEmail;
     }
 
     @Transactional
@@ -66,7 +72,8 @@ public class DemoDataService {
         LocalDateTime now = LocalDateTime.now(clock).truncatedTo(ChronoUnit.MINUTES);
         LocalDate today = now.toLocalDate();
 
-        // Evento publicado do organizador: presença, vagas esgotadas e inscrição/cancelamento.
+        // Evento publicado do organizador: presença, vagas esgotadas e
+        // inscrição/cancelamento.
         Event open = event(OPEN_EVENT, "Semana com oficinas, palestras e minicursos de tecnologia.",
                 "IFCE – Campus Fortaleza", technology, organizer, EventStatus.PUBLISHED);
         open.setStartDate(today.minusDays(1));
@@ -75,8 +82,8 @@ public class DemoDataService {
                 now.minusMinutes(30), now.plusHours(3), 20);
         Activity fullLecture = activity(open, "Palestra de Segurança Web", ActivityType.LECTURE, "Equipe EventIF",
                 today.plusDays(1).atTime(9, 0), today.plusDays(1).atTime(11, 0), 1);
-        activity(open, "Minicurso de JPA", ActivityType.MINICOURSE, "Equipe EventIF",
-                today.plusDays(2).atTime(14, 0), today.plusDays(2).atTime(18, 0), 30);
+        activity(open, "Minicurso de JPA", ActivityType.MINICOURSE, "Equipe EventIF", today.plusDays(2).atTime(14, 0),
+                today.plusDays(2).atTime(18, 0), 30);
         enroll(participant, workshop, false);
         enroll(ana, workshop, false);
         enroll(bruno, workshop, false);
@@ -98,7 +105,8 @@ public class DemoDataService {
             enroll(ana, a1, false);
         }
 
-        // Evento do segundo organizador: o primeiro organizador não pode alterá-lo (403), e vice-versa.
+        // Evento do segundo organizador: o primeiro organizador não pode alterá-lo
+        // (403), e vice-versa.
         Event other = event(OTHER_EVENT, "Evento de outro organizador, usado na demonstração de segurança.",
                 "Auditório Central", technology, secondOrganizer, EventStatus.PUBLISHED);
         other.setStartDate(today.plusDays(10));
@@ -107,18 +115,20 @@ public class DemoDataService {
                 today.plusDays(10).atTime(9, 0), today.plusDays(10).atTime(10, 0), 40);
 
         log.info("[DEMO] Dados do vídeo prontos. Senha de todos: SEED_PASSWORD.");
-        log.info("[DEMO] '{}' (organizer, PUBLICADO) id={} | '{}' (ENCERRADO, certificado) id={} | '{}' (organizador2) id={}",
+        log.info(
+                "[DEMO] '{}' (organizer, PUBLICADO) id={} | '{}' (ENCERRADO, certificado) id={} | '{}' (organizador2) id={}",
                 OPEN_EVENT, open.getId(), CLOSED_EVENT, closed.getId(), OTHER_EVENT, other.getId());
-        log.info("[DEMO] Teste do 403: entre como organizador2@test.com e abra /organizador/eventos/{}/editar", open.getId());
+        log.info("[DEMO] Teste do 403: entre como organizador2@test.com e abra /organizador/eventos/{}/editar",
+                open.getId());
     }
 
     private User user(String name, String email, Role role) {
-        return users.findByEmail(email).orElseGet(() ->
-                users.save(new User(name, email, passwordEncoder.encode(password), true, role)));
+        return users.findByEmail(email)
+                .orElseGet(() -> users.save(new User(name, email, passwordEncoder.encode(password), true, role)));
     }
 
     private Event event(String title, String description, String location, Category category, User organizer,
-                        EventStatus status) {
+            EventStatus status) {
         return events.findFirstByTitleAndOrganizerId(title, organizer.getId()).orElseGet(() -> {
             LocalDate today = LocalDate.now(clock);
             Event event = new Event(title, description, location, today, today, category, organizer);
@@ -128,8 +138,8 @@ public class DemoDataService {
     }
 
     /** Cria a atividade ou realinha os horários dela (eventos não encerrados). */
-    private Activity activity(Event event, String title, ActivityType type, String instructor,
-                              LocalDateTime start, LocalDateTime end, int capacity) {
+    private Activity activity(Event event, String title, ActivityType type, String instructor, LocalDateTime start,
+            LocalDateTime end, int capacity) {
         int minutes = (int) Duration.between(start, end).toMinutes();
         return activities.findFirstByTitleAndEventId(title, event.getId()).map(existing -> {
             if (event.getStatus() != EventStatus.CLOSED) {
@@ -138,7 +148,8 @@ public class DemoDataService {
                 existing.setWorkloadMinutes(minutes);
             }
             return existing;
-        }).orElseGet(() -> activities.save(new Activity(title, type, instructor, start, end, minutes, capacity, event)));
+        }).orElseGet(
+                () -> activities.save(new Activity(title, type, instructor, start, end, minutes, capacity, event)));
     }
 
     private void enroll(User user, Activity activity, boolean present) {

@@ -28,8 +28,8 @@ public class EnrollmentService {
     private final UserRepository users;
     private final Clock clock;
 
-    public EnrollmentService(EventRepository events, ActivityRepository activities,
-            EnrollmentRepository enrollments, UserRepository users, Clock clock) {
+    public EnrollmentService(EventRepository events, ActivityRepository activities, EnrollmentRepository enrollments,
+            UserRepository users, Clock clock) {
         this.events = events;
         this.activities = activities;
         this.enrollments = enrollments;
@@ -92,8 +92,8 @@ public class EnrollmentService {
         List<Enrollment> result = enrollments.findByActivityIdOrderByUserNameAscIdAsc(activityId);
         result.forEach(enrollment -> enrollment.getUser().getName());
         LocalDateTime now = LocalDateTime.now(clock);
-        boolean canMark = event.getStatus() != EventStatus.CLOSED
-                && !now.isBefore(activity.getStartDateTime()) && now.isBefore(activity.getEndDateTime());
+        boolean canMark = event.getStatus() != EventStatus.CLOSED && !now.isBefore(activity.getStartDateTime())
+                && now.isBefore(activity.getEndDateTime());
         return new Roster(event, activity, result, canMark);
     }
 
@@ -105,8 +105,8 @@ public class EnrollmentService {
         Set<Long> checked = presentIds == null ? Set.of() : presentIds;
         Set<Long> rosterIds = roster.stream().map(Enrollment::getId).collect(Collectors.toSet());
         for (Long id : checked) {
-            if (rosterIds.contains(id)) continue;
-            // Inscrição de atividade de outro organizador: 403; de outra atividade própria ou inexistente: 404.
+            if (rosterIds.contains(id))
+                continue;
             enrollments.findById(id).ifPresent(other -> checkOwner(other.getActivity().getEvent(), email));
             throw notFound();
         }
@@ -122,8 +122,8 @@ public class EnrollmentService {
 
     private User participant(String email) {
         return users.findByEmail(email)
-                .filter(user -> user.isActive() && user.getRoles().stream()
-                        .anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
+                .filter(user -> user.isActive()
+                        && user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
                 .orElseThrow(() -> new AccessDeniedException("Apenas participantes podem acessar inscrições."));
     }
 
@@ -142,7 +142,8 @@ public class EnrollmentService {
     private Activity activityForEvent(Long activityId, Long eventId, String email) {
         Activity activity = activities.findById(activityId).orElseThrow(this::notFound);
         checkOwner(activity.getEvent(), email);
-        if (!activity.getEvent().getId().equals(eventId)) throw notFound();
+        if (!activity.getEvent().getId().equals(eventId))
+            throw notFound();
         return activity;
     }
 
@@ -150,5 +151,6 @@ public class EnrollmentService {
         return new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    public record Roster(Event event, Activity activity, List<Enrollment> enrollments, boolean canMark) {}
+    public record Roster(Event event, Activity activity, List<Enrollment> enrollments, boolean canMark) {
+    }
 }

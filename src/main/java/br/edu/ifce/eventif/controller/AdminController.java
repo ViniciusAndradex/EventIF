@@ -40,7 +40,8 @@ public class AdminController {
     public String revokeOrganizer(@PathVariable Long id, RedirectAttributes redirect) {
         try {
             administration.revokeOrganizer(id);
-            redirect.addFlashAttribute("success", "Papel de organizador retirado; eventuais rascunhos foram encerrados.");
+            redirect.addFlashAttribute("success",
+                    "Papel de organizador retirado; eventuais rascunhos foram encerrados.");
         } catch (IllegalArgumentException exception) {
             redirect.addFlashAttribute("error", exception.getMessage());
         }

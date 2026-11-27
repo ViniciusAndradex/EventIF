@@ -17,7 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrganizerEnrollmentController {
     private final EnrollmentService enrollments;
 
-    public OrganizerEnrollmentController(EnrollmentService enrollments) { this.enrollments = enrollments; }
+    public OrganizerEnrollmentController(EnrollmentService enrollments) {
+        this.enrollments = enrollments;
+    }
 
     @GetMapping
     public String list(@PathVariable Long eventId, @PathVariable Long activityId, Principal principal, Model model) {
@@ -27,11 +29,11 @@ public class OrganizerEnrollmentController {
 
     @PutMapping("/presenca")
     public String presence(@PathVariable Long eventId, @PathVariable Long activityId,
-                           @RequestParam(name = "presentes", required = false) Set<Long> presentIds,
-                           Principal principal, RedirectAttributes redirect) {
+            @RequestParam(name = "presentes", required = false) Set<Long> presentIds, Principal principal,
+            RedirectAttributes redirect) {
         try {
             enrollments.updatePresence(eventId, activityId, presentIds, principal.getName());
-            redirect.addFlashAttribute("success", "Presenças registradas.");
+            redirect.addFlashAttribute("success", "Presenças atualizadas.");
         } catch (IllegalArgumentException ex) {
             redirect.addFlashAttribute("error", ex.getMessage());
         }

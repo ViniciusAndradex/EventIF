@@ -17,29 +17,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/certificados")
 public class CertificateController {
     private final CertificateService certificates;
+
     public CertificateController(CertificateService certificates) {
         this.certificates = certificates;
     }
 
     @GetMapping
     public String list(Principal principal, Model model) {
-        model.addAttribute("certificates", certificates.listMine(principal.getName()));
+        model.addAttribute("certificates", certificates.listCertificates(principal.getName()));
         return "certificados/lista";
     }
 
     @GetMapping("/{eventId}")
     public String show(@PathVariable Long eventId, Principal principal, Model model) {
-        model.addAttribute("certificate", certificates.findMine(eventId, principal.getName()));
+        model.addAttribute("certificate", certificates.findCertificates(eventId, principal.getName()));
         model.addAttribute("pdf", false);
         return "certificados/certificado";
     }
 
     @GetMapping("/{eventId}/pdf")
     public ResponseEntity<byte[]> pdf(@PathVariable Long eventId, Principal principal) throws IOException {
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.inline()
-                        .filename("certificado-" + principal.getName() + ".pdf").build().toString())
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.inline().filename("certificado-" + principal.getName() + ".pdf").build()
+                                .toString())
                 .cacheControl(org.springframework.http.CacheControl.noStore())
                 .body(certificates.generatePdf(eventId, principal.getName()));
     }

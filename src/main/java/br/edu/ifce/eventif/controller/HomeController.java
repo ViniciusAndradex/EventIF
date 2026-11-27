@@ -21,7 +21,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@RequestParam(name = "categoria", required = false) Long categoryId,
-                       @RequestParam(name = "pagina", defaultValue = "0") int page, Model model) {
+            @RequestParam(name = "pagina", defaultValue = "0") int page, Model model) {
         model.addAttribute("events", catalog.list(categoryId, page));
         model.addAttribute("categories", categories.list());
         model.addAttribute("categoryId", categoryId);
