@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CatalogService {
+    private static final int PAGE_SIZE = 9;
     private final EventRepository events;
     private final ActivityRepository activities;
     private final EnrollmentRepository enrollments;
@@ -33,7 +34,8 @@ public class CatalogService {
 
     @Transactional(readOnly = true)
     public Page<Event> list(Long categoryId, int page) {
-        var pageable = PageRequest.of(Math.max(page, 0), 9);
+        // Limita a página para que o offset (página × 9) caiba em int; páginas além do fim voltam vazias.
+        var pageable = PageRequest.of(Math.min(Math.max(page, 0), Integer.MAX_VALUE / PAGE_SIZE), PAGE_SIZE);
         Page<Event> result = categoryId == null
                 ? events.findByStatusOrderByStartDateAscIdAsc(EventStatus.PUBLISHED, pageable)
                 : events.findByStatusAndCategoryIdOrderByStartDateAscIdAsc(EventStatus.PUBLISHED, categoryId, pageable);

@@ -2,12 +2,14 @@ package br.edu.ifce.eventif.controller;
 
 import br.edu.ifce.eventif.service.EnrollmentService;
 import java.security.Principal;
+import java.util.Set;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -23,12 +25,13 @@ public class OrganizerEnrollmentController {
         return "organizador/atividades/inscritos";
     }
 
-    @PutMapping("/{id}/presenca")
-    public String present(@PathVariable Long eventId, @PathVariable Long activityId, @PathVariable Long id,
-                          Principal principal, RedirectAttributes redirect) {
+    @PutMapping("/presenca")
+    public String presence(@PathVariable Long eventId, @PathVariable Long activityId,
+                           @RequestParam(name = "presentes", required = false) Set<Long> presentIds,
+                           Principal principal, RedirectAttributes redirect) {
         try {
-            enrollments.markPresent(eventId, activityId, id, principal.getName());
-            redirect.addFlashAttribute("success", "Presença registrada.");
+            enrollments.updatePresence(eventId, activityId, presentIds, principal.getName());
+            redirect.addFlashAttribute("success", "Presenças registradas.");
         } catch (IllegalArgumentException ex) {
             redirect.addFlashAttribute("error", ex.getMessage());
         }
