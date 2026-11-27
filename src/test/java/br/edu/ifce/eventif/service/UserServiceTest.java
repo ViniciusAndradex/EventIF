@@ -1,5 +1,6 @@
 package br.edu.ifce.eventif.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -22,7 +23,8 @@ class UserServiceTest {
         form.setEmail("participante@example.com");
         when(users.existsByEmail("participante@example.com")).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> service.register(form));
+        var error = assertThrows(IllegalArgumentException.class, () -> service.register(form));
+        assertEquals("Este email já está cadastrado.", error.getMessage());
         verify(users, never()).saveAndFlush(any());
     }
 }
