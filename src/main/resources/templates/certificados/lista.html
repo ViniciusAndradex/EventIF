@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Meus certificados', ~{::main})}">
+<body><main class="container flex-grow-1 py-4">
+    <h1>Meus certificados</h1>
+    <p th:if="${#lists.isEmpty(certificates)}">Você ainda não possui certificados disponíveis.</p>
+    <ul class="list-group" th:unless="${#lists.isEmpty(certificates)}">
+        <li class="list-group-item" th:each="certificate : ${certificates}">
+            <a th:href="@{/certificados/{id}(id=${certificate.eventId})}" th:text="${certificate.eventTitle}">Evento</a>
+            <span class="text-body-secondary" th:text="${certificate.formattedWorkload()}">Carga horária</span>
+        </li>
+    </ul>
+</main></body></html>
