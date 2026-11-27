@@ -17,14 +17,10 @@ public class SecurityConfig {
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/organizador", "/organizador/**").hasRole("ORGANIZADOR")
                         .requestMatchers("/inscricoes", "/inscricoes/**").hasRole("PARTICIPANTE")
-                        .requestMatchers("/certificados", "/certificados/**").hasRole("PARTICIPANTE")
-                        .anyRequest().authenticated())
-                .formLogin(form -> 
-                    form.loginPage("/login")
-                    .usernameParameter("email")
-                    .permitAll())
+                        .requestMatchers("/certificados", "/certificados/**").hasRole("PARTICIPANTE").anyRequest()
+                        .authenticated())
+                .formLogin(form -> form.loginPage("/login").usernameParameter("email").permitAll())
                 .addFilterAfter(new CurrentRoleFilter(users), AnonymousAuthenticationFilter.class)
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout"))
-                .build();
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout")).build();
     }
 }

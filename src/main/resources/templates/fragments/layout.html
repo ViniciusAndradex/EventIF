@@ -1,29 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="layout(title, content)">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:fragment="layout(title, content)">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${title} + ' | EventIF'">EventIF</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
-<!-- Fragments nomeados: cabecalho (contém o menu), menu e rodape. -->
-<header th:fragment="cabecalho" class="border-bottom">
-    <!-- Menu exibido conforme o perfil (apenas apresentação; a autorização é feita no servidor). -->
-    <nav th:fragment="menu" class="container py-3" aria-label="Navegação principal">
-        <a class="navbar-brand fw-bold" th:href="@{/}">EventIF</a>
-        <a sec:authorize="isAnonymous()" th:href="@{/login}">Entrar</a>
-        <a sec:authorize="isAnonymous()" th:href="@{/cadastro}">Cadastro</a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Usuários</a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/categorias}">Categorias</a>
-        <a sec:authorize="hasRole('ORGANIZADOR')" th:href="@{/organizador}">Meus eventos</a>
-        <a sec:authorize="hasRole('PARTICIPANTE')" th:href="@{/inscricoes}">Minhas inscrições</a>
-        <a sec:authorize="hasRole('PARTICIPANTE')" th:href="@{/certificados}">Meus certificados</a>
-        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-inline"><button type="submit" class="btn btn-link">Sair</button></form>
-    </nav>
-</header>
-<main class="container flex-grow-1 py-4" th:replace="${content}"></main>
-<footer th:fragment="rodape" class="border-top py-3 mt-auto"><div class="container text-body-secondary">EventIF</div></footer>
-<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}" defer></script>
+    <!-- Fragments nomeados: cabecalho (contém o menu), menu e rodape. -->
+    <header th:fragment="cabecalho" class="border-bottom">
+        <!-- Menu exibido conforme o perfil (apenas apresentação; a autorização é feita no servidor). -->
+        <nav th:fragment="menu" class="container py-3" aria-label="Navegação principal">
+            <a class="navbar-brand fw-bold" th:href="@{/}">EventIF</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">Entrar</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/cadastro}">Cadastro</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Usuários</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/categorias}">Categorias</a>
+            <a sec:authorize="hasRole('ORGANIZADOR')" th:href="@{/organizador}">Meus eventos</a>
+            <a sec:authorize="hasRole('PARTICIPANTE')" th:href="@{/inscricoes}">Minhas inscrições</a>
+            <a sec:authorize="hasRole('PARTICIPANTE')" th:href="@{/certificados}">Meus certificados</a>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-inline"><button
+                    type="submit" class="btn btn-link">Sair</button></form>
+        </nav>
+    </header>
+    <main class="container flex-grow-1 py-4" th:replace="${content}"></main>
+    <footer th:fragment="rodape" class="border-top py-3 mt-auto">
+        <div class="container text-body-secondary">EventIF</div>
+    </footer>
+    <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}" defer></script>
 </body>
+
 </html>

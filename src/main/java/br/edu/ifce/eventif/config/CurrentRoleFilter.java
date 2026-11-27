@@ -31,8 +31,8 @@ public class CurrentRoleFilter extends OncePerRequestFilter {
             boolean current;
             try {
                 UserDetails user = users.loadUserByUsername(authentication.getName());
-                current = user.isEnabled() && new HashSet<>(user.getAuthorities())
-                        .equals(new HashSet<>(authentication.getAuthorities()));
+                current = user.isEnabled()
+                        && new HashSet<>(user.getAuthorities()).equals(new HashSet<>(authentication.getAuthorities()));
             } catch (UsernameNotFoundException exception) {
                 current = false;
             }

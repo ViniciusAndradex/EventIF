@@ -1,26 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Detalhes do evento', ~{::main})}">
-<body><main class="container flex-grow-1 py-4">
-    <a th:href="@{/}">Voltar aos eventos</a>
-    <h1 class="mt-3" th:text="${detail.event.title}"></h1>
-    <p th:text="${detail.event.category.name}"></p>
-    <p th:text="${detail.event.description}" style="white-space: pre-line"></p>
-    <p><strong>Local:</strong> <span th:text="${detail.event.location}"></span></p>
-    <p><strong>Período:</strong> <span th:text="${#temporals.format(detail.event.startDate, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(detail.event.endDate, 'dd/MM/yyyy')}"></span></p>
-    <p><strong>Organização:</strong> <span th:text="${detail.event.organizer.name}"></span></p>
-    <h2 class="h3 mt-4">Atividades</h2>
-    <p th:if="${#lists.isEmpty(detail.activities)}">Nenhuma atividade cadastrada.</p>
-    <div class="row g-3"><div class="col-md-6" th:each="item : ${detail.activities}">
-        <article class="card h-100"><div class="card-body">
-            <h3 class="h5" th:text="${item.activity.title}"></h3>
-            <p><strong>Tipo:</strong> <span th:switch="${item.activity.type.name()}"><span th:case="'LECTURE'">Palestra</span><span th:case="'MINICOURSE'">Minicurso</span><span th:case="'WORKSHOP'">Oficina</span></span></p>
-            <p><strong>Instrutor:</strong> <span th:text="${item.activity.instructor}"></span></p>
-            <p><strong>Início:</strong> <span th:text="${#temporals.format(item.activity.startDateTime, 'dd/MM/yyyy HH:mm')}"></span><br><strong>Término:</strong> <span th:text="${#temporals.format(item.activity.endDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
-            <p><strong>Carga horária:</strong> <span th:text="${item.workload}"></span><br><strong>Capacidade:</strong> <span th:text="${item.activity.capacity}"></span><br><strong>Inscritos:</strong> <span th:text="${item.enrolledCount}"></span><br><strong>Vagas restantes:</strong> <span th:text="${item.remaining}"></span></p>
-            <p th:if="${detail.participant}" th:text="${item.enrolled} ? 'Você está inscrito nesta atividade.' : 'Você ainda não está inscrito nesta atividade.'"></p>
-            <form th:if="${detail.participant and !item.enrolled}" th:action="@{/inscricoes/atividades/{id}(id=${item.activity.id})}" method="post">
-                <button class="btn btn-primary" type="submit">Inscrever-se</button>
-            </form>
-        </div></article>
-    </div></div>
-</main></body></html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout('Detalhes do evento', ~{::main})}">
+
+<body>
+    <main class="container flex-grow-1 py-4">
+        <a th:href="@{/}">Voltar aos eventos</a>
+        <h1 class="mt-3" th:text="${detail.event.title}"></h1>
+        <p th:text="${detail.event.category.name}"></p>
+        <p th:text="${detail.event.description}" style="white-space: pre-line"></p>
+        <p><strong>Local:</strong> <span th:text="${detail.event.location}"></span></p>
+        <p><strong>Período:</strong> <span
+                th:text="${#temporals.format(detail.event.startDate, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(detail.event.endDate, 'dd/MM/yyyy')}"></span>
+        </p>
+        <p><strong>Organização:</strong> <span th:text="${detail.event.organizer.name}"></span></p>
+        <h2 class="h3 mt-4">Atividades</h2>
+        <p th:if="${#lists.isEmpty(detail.activities)}">Nenhuma atividade cadastrada.</p>
+        <div class="row g-3">
+            <div class="col-md-6" th:each="item : ${detail.activities}">
+                <article class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5" th:text="${item.activity.title}"></h3>
+                        <p><strong>Tipo:</strong> <span th:switch="${item.activity.type.name()}"><span
+                                    th:case="'LECTURE'">Palestra</span><span
+                                    th:case="'MINICOURSE'">Minicurso</span><span
+                                    th:case="'WORKSHOP'">Oficina</span></span></p>
+                        <p><strong>Instrutor:</strong> <span th:text="${item.activity.instructor}"></span></p>
+                        <p><strong>Início:</strong> <span
+                                th:text="${#temporals.format(item.activity.startDateTime, 'dd/MM/yyyy HH:mm')}"></span><br><strong>Término:</strong>
+                            <span th:text="${#temporals.format(item.activity.endDateTime, 'dd/MM/yyyy HH:mm')}"></span>
+                        </p>
+                        <p><strong>Carga horária:</strong> <span
+                                th:text="${item.workload}"></span><br><strong>Capacidade:</strong> <span
+                                th:text="${item.activity.capacity}"></span><br><strong>Inscritos:</strong> <span
+                                th:text="${item.enrolledCount}"></span><br><strong>Vagas restantes:</strong> <span
+                                th:text="${item.remaining}"></span></p>
+                        <p th:if="${detail.participant}"
+                            th:text="${item.enrolled} ? 'Você está inscrito nesta atividade.' : 'Você ainda não está inscrito nesta atividade.'">
+                        </p>
+                        <form th:if="${detail.participant and !item.enrolled}"
+                            th:action="@{/inscricoes/atividades/{id}(id=${item.activity.id})}" method="post">
+                            <button class="btn btn-primary" type="submit">Inscrever-se</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

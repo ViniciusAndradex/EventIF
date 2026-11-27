@@ -24,8 +24,8 @@ public class CatalogService {
     private final EnrollmentRepository enrollments;
     private final UserRepository users;
 
-    public CatalogService(EventRepository events, ActivityRepository activities,
-                          EnrollmentRepository enrollments, UserRepository users) {
+    public CatalogService(EventRepository events, ActivityRepository activities, EnrollmentRepository enrollments,
+            UserRepository users) {
         this.events = events;
         this.activities = activities;
         this.enrollments = enrollments;
@@ -34,7 +34,6 @@ public class CatalogService {
 
     @Transactional(readOnly = true)
     public Page<Event> list(Long categoryId, int page) {
-        // Limita a página para que o offset (página × 9) caiba em int; páginas além do fim voltam vazias.
         var pageable = PageRequest.of(Math.min(Math.max(page, 0), Integer.MAX_VALUE / PAGE_SIZE), PAGE_SIZE);
         Page<Event> result = categoryId == null
                 ? events.findByStatusOrderByStartDateAscIdAsc(EventStatus.PUBLISHED, pageable)
@@ -45,18 +44,18 @@ public class CatalogService {
 
     @Transactional(readOnly = true)
     public EventDetail detail(Long id, String email) {
-        Event event = events.findById(id)
-                .filter(candidate -> candidate.getStatus() == EventStatus.PUBLISHED)
+        Event event = events.findById(id).filter(candidate -> candidate.getStatus() == EventStatus.PUBLISHED)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         event.getCategory().getName();
         event.getOrganizer().getName();
-        User participant = email == null ? null : users.findByEmail(email)
-                .filter(user -> user.isActive() && user.getRoles().stream()
-                        .anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
-                .orElse(null);
+        User participant = email == null ? null
+                : users.findByEmail(email).filter(user -> user.isActive()
+                        && user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_PARTICIPANTE")))
+                        .orElse(null);
         List<ActivityDetail> details = activities.findByEventId(id).stream().map(activity -> {
             long count = enrollments.countByActivityId(activity.getId());
-            boolean enrolled = participant != null && enrollments.existsByUserIdAndActivityId(participant.getId(), activity.getId());
+            boolean enrolled = participant != null
+                    && enrollments.existsByUserIdAndActivityId(participant.getId(), activity.getId());
             int minutes = activity.getWorkloadMinutes();
             String workload = minutes / 60 + "h" + String.format("%02d", minutes % 60);
             return new ActivityDetail(activity, workload, count, activity.getCapacity() - count, enrolled);
@@ -64,6 +63,10 @@ public class CatalogService {
         return new EventDetail(event, details, participant != null);
     }
 
-    public record EventDetail(Event event, List<ActivityDetail> activities, boolean participant) {}
-    public record ActivityDetail(Activity activity, String workload, long enrolledCount, long remaining, boolean enrolled) {}
+    public record EventDetail(Event event, List<ActivityDetail> activities, boolean participant) {
+    }
+
+    public record ActivityDetail(Activity activity, String workload, long enrolledCount, long remaining,
+            boolean enrolled) {
+    }
 }

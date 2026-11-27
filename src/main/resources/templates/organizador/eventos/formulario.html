@@ -1,23 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Evento', ~{::main})}">
-<body><main class="container flex-grow-1 py-4">
-  <h1 th:text="${eventId == null ? 'Novo evento' : 'Editar evento'}">Evento</h1>
-  <form method="post" th:object="${eventForm}" th:action="${eventId == null} ? @{/organizador/eventos} : @{/organizador/eventos/{id}(id=${eventId})}">
-    <input th:if="${eventId != null}" type="hidden" name="_method" value="put">
-    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
-    <label class="form-label" for="title">Título</label><input class="form-control" id="title" th:field="*{title}" maxlength="255" required>
-    <div class="text-danger" th:errors="*{title}"></div>
-    <label class="form-label" for="description">Descrição</label><textarea class="form-control" id="description" th:field="*{description}" required></textarea>
-    <div class="text-danger" th:errors="*{description}"></div>
-    <label class="form-label" for="location">Local</label><input class="form-control" id="location" th:field="*{location}" maxlength="255" required>
-    <div class="text-danger" th:errors="*{location}"></div>
-    <label class="form-label" for="startDate">Data de início</label><input class="form-control" type="date" id="startDate" th:field="*{startDate}" required>
-    <div class="text-danger" th:errors="*{startDate}"></div>
-    <label class="form-label" for="endDate">Data de término</label><input class="form-control" type="date" id="endDate" th:field="*{endDate}" required>
-    <div class="text-danger" th:errors="*{endDate}"></div>
-    <label class="form-label" for="categoryId">Categoria</label><select class="form-select" id="categoryId" th:field="*{categoryId}" required>
-      <option value="">Selecione</option><option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-    </select><div class="text-danger" th:errors="*{categoryId}"></div>
-    <button class="btn btn-primary mt-3" type="submit">Salvar</button><a class="btn btn-link mt-3" th:href="@{/organizador/eventos}">Cancelar</a>
-  </form>
-</main></body></html>
+
+<body>
+    <main class="container flex-grow-1 py-4">
+        <h1 th:text="${eventId == null ? 'Novo evento' : 'Editar evento'}">Evento</h1>
+        <form method="post" th:object="${eventForm}"
+            th:action="${eventId == null} ? @{/organizador/eventos} : @{/organizador/eventos/{id}(id=${eventId})}">
+            <input th:if="${eventId != null}" type="hidden" name="_method" value="put">
+            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
+                th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+            <label class="form-label" for="title">Título</label><input class="form-control" id="title"
+                th:field="*{title}" maxlength="255" required>
+            <div class="text-danger" th:errors="*{title}"></div>
+            <label class="form-label" for="description">Descrição</label><textarea class="form-control" id="description"
+                th:field="*{description}" required></textarea>
+            <div class="text-danger" th:errors="*{description}"></div>
+            <label class="form-label" for="location">Local</label><input class="form-control" id="location"
+                th:field="*{location}" maxlength="255" required>
+            <div class="text-danger" th:errors="*{location}"></div>
+            <label class="form-label" for="startDate">Data de início</label><input class="form-control" type="date"
+                id="startDate" th:field="*{startDate}" required>
+            <div class="text-danger" th:errors="*{startDate}"></div>
+            <label class="form-label" for="endDate">Data de término</label><input class="form-control" type="date"
+                id="endDate" th:field="*{endDate}" required>
+            <div class="text-danger" th:errors="*{endDate}"></div>
+            <label class="form-label" for="categoryId">Categoria</label><select class="form-select" id="categoryId"
+                th:field="*{categoryId}" required>
+                <option value="">Selecione</option>
+                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">
+                </option>
+            </select>
+            <div class="text-danger" th:errors="*{categoryId}"></div>
+            <button class="btn btn-primary mt-3" type="submit">Salvar</button><a class="btn btn-link mt-3"
+                th:href="@{/organizador/eventos}">Cancelar</a>
+        </form>
+    </main>
+</body>
+
+</html>

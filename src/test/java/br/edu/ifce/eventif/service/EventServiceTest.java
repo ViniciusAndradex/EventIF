@@ -29,33 +29,50 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
-    @Mock EventRepository events;
-    @Mock ActivityRepository activities;
-    @Mock CategoryRepository categories;
-    @Mock UserRepository users;
-    @Mock User organizer;
-    @Mock Category category;
-    @Mock Event event;
-    @Mock Activity activity;
+    @Mock
+    EventRepository events;
+    @Mock
+    ActivityRepository activities;
+    @Mock
+    CategoryRepository categories;
+    @Mock
+    UserRepository users;
+    @Mock
+    User organizer;
+    @Mock
+    Category category;
+    @Mock
+    Event event;
+    @Mock
+    Activity activity;
     EventService service;
 
-    @BeforeEach void setUp() { service = new EventService(events, activities, categories, users); }
+    @BeforeEach
+    void setUp() {
+        service = new EventService(events, activities, categories, users);
+    }
 
     private EventForm form(LocalDate start, LocalDate end) {
         EventForm form = new EventForm();
-        form.setTitle("Evento"); form.setDescription("Descrição"); form.setLocation("Local");
-        form.setStartDate(start); form.setEndDate(end); form.setCategoryId(1L);
+        form.setTitle("Evento");
+        form.setDescription("Descrição");
+        form.setLocation("Local");
+        form.setStartDate(start);
+        form.setEndDate(end);
+        form.setCategoryId(1L);
         return form;
     }
 
-    @Test void rejectsEndBeforeStart() {
+    @Test
+    void rejectsEndBeforeStart() {
         EventForm form = form(LocalDate.of(2030, 5, 2), LocalDate.of(2030, 5, 1));
         var error = assertThrows(IllegalArgumentException.class, () -> service.create(form, "dono"));
         assertEquals("A data de término não pode ser anterior à data de início.", error.getMessage());
         verify(events, never()).save(org.mockito.ArgumentMatchers.any());
     }
 
-    @Test void acceptsSameStartAndEndDay() {
+    @Test
+    void acceptsSameStartAndEndDay() {
         EventForm form = form(LocalDate.of(2030, 5, 1), LocalDate.of(2030, 5, 1));
         when(categories.findById(1L)).thenReturn(Optional.of(category));
         when(users.findByEmail("dono")).thenReturn(Optional.of(organizer));
@@ -63,7 +80,8 @@ class EventServiceTest {
         verify(events).save(org.mockito.ArgumentMatchers.any(Event.class));
     }
 
-    @Test void rejectsDatesThatExcludeExistingActivity() {
+    @Test
+    void rejectsDatesThatExcludeExistingActivity() {
         EventForm form = form(LocalDate.of(2030, 5, 2), LocalDate.of(2030, 5, 3));
         when(events.findById(1L)).thenReturn(Optional.of(event));
         when(event.getOrganizer()).thenReturn(organizer);

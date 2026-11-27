@@ -16,15 +16,21 @@ public class UserService implements UserDetailsService {
     private final UserRepository users;
     private final RoleRepository roles;
     private final PasswordEncoder encoder;
+
     public UserService(UserRepository users, RoleRepository roles, PasswordEncoder encoder) {
-        this.users = users; this.roles = roles; this.encoder = encoder;
+        this.users = users;
+        this.roles = roles;
+        this.encoder = encoder;
     }
+
     @Transactional
     public void register(RegistrationForm form) {
-        if (users.existsByEmail(form.getEmail())) throw new IllegalArgumentException("Este email já está cadastrado.");
+        if (users.existsByEmail(form.getEmail()))
+            throw new IllegalArgumentException("Este email já está cadastrado.");
         var role = roles.findByName("ROLE_PARTICIPANTE").orElseThrow();
         users.saveAndFlush(new User(form.getName(), form.getEmail(), encoder.encode(form.getPassword()), true, role));
     }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

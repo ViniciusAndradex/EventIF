@@ -33,6 +33,13 @@ public class CategoryService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
     }
 
+    @Transactional(readOnly = true)
+    public CategoryForm editForm(Long id) {
+        CategoryForm form = new CategoryForm();
+        form.setName(find(id).getName());
+        return form;
+    }
+
     @Transactional
     public void create(CategoryForm form) {
         categories.save(new Category(form.getName().strip()));
