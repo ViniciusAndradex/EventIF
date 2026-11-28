@@ -11,7 +11,7 @@ Trabalho final da disciplina **Tópicos em Java para a Web** (IFCE – Campus Fo
 
 ## Vídeo
 
-[Projeto Event IF Explicado](https://youtu.be/7B0ceAnhmBg?si=9WEMi9aRnNb6EpjK)
+[Projeto Event IF Explicado](https://youtu.be/FmqS4nJV468?si=KS50FfWKD5sAB0Qm)
 
 ## Pré-requisitos
 
